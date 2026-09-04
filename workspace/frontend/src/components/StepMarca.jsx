@@ -1,9 +1,10 @@
-import { Cpu, Sparkles } from 'lucide-react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faMicrochip, faWandMagicSparkles } from '@fortawesome/free-solid-svg-icons'
 
 const opcoes = [
-  { valor: '', rotulo: 'Indiferente', desc: 'Escolho a melhor plataforma', icon: Sparkles },
-  { valor: 'AMD', rotulo: 'AMD', desc: 'Ryzen AM4 / AM5', icon: Cpu },
-  { valor: 'INTEL', rotulo: 'Intel', desc: 'Core LGA1700 / LGA1851', icon: Cpu },
+  { valor: '', rotulo: 'Indiferente', desc: 'Escolho a melhor plataforma', icon: faWandMagicSparkles },
+  { valor: 'AMD', rotulo: 'AMD', desc: 'Ryzen AM4 / AM5', icon: faMicrochip },
+  { valor: 'INTEL', rotulo: 'Intel', desc: 'Core LGA1700 / LGA1851', icon: faMicrochip },
 ]
 
 export default function StepMarca({ marca, onChange }) {
@@ -19,7 +20,6 @@ export default function StepMarca({ marca, onChange }) {
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         {opcoes.map((o) => {
           const ativo = marca === o.valor
-          const Icon = o.icon
           return (
             <button
               key={o.rotulo}
@@ -35,7 +35,7 @@ export default function StepMarca({ marca, onChange }) {
                   ativo ? 'bg-brand-600/20 text-brand-300' : 'bg-slate-800 text-slate-400'
                 }`}
               >
-                <Icon className="h-6 w-6" />
+                <FontAwesomeIcon icon={o.icon} className="h-6 w-6" />
               </span>
               <span className="font-semibold text-white">{o.rotulo}</span>
               <span className="text-xs text-slate-400">{o.desc}</span>

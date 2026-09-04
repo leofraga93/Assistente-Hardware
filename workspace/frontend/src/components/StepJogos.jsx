@@ -1,15 +1,27 @@
-import { Check, Gamepad2, Clapperboard, Briefcase } from 'lucide-react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {
+  faCheck,
+  faGamepad,
+  faClapperboard,
+  faBriefcase,
+  faCircleCheck,
+  faCircle,
+} from '@fortawesome/free-solid-svg-icons'
 
 const fallbackIcon = {
-  'Edicao de video': Clapperboard,
-  'Trabalho': Briefcase,
-  'Estudos': Briefcase,
+  'Edicao de video': faClapperboard,
+  'Trabalho': faBriefcase,
+  'Estudos': faBriefcase,
 }
 
 function iconFor(nome) {
   const chave = Object.keys(fallbackIcon).find((k) => nome.includes(k))
-  const Icon = chave ? fallbackIcon[chave] : Gamepad2
-  return <Icon className="h-5 w-5 text-brand-300" />
+  return (
+    <FontAwesomeIcon
+      icon={chave ? fallbackIcon[chave] : faGamepad}
+      className="h-5 w-5 text-brand-300"
+    />
+  )
 }
 
 export default function StepJogos({ jogos, selecionados, onToggle }) {
@@ -49,7 +61,7 @@ export default function StepJogos({ jogos, selecionados, onToggle }) {
                 }`}
               >
                 {ativo ? (
-                  <Check className="h-5 w-5 text-brand-300" />
+                  <FontAwesomeIcon icon={faCheck} className="h-5 w-5 text-brand-300" />
                 ) : (
                   iconFor(jogo.nome)
                 )}
@@ -62,11 +74,14 @@ export default function StepJogos({ jogos, selecionados, onToggle }) {
                 </span>
               </span>
               <span
-                className={`text-2xl transition ${
+                className={`flex h-7 w-7 items-center justify-center ${
                   ativo ? 'text-brand-400' : 'text-slate-700'
                 }`}
               >
-                {ativo ? '\u25CF' : '\u25CB'}
+                <FontAwesomeIcon
+                  icon={ativo ? faCircleCheck : faCircle}
+                  className="h-6 w-6"
+                />
               </span>
             </button>
           )

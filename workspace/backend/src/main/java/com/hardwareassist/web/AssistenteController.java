@@ -1,8 +1,10 @@
 package com.hardwareassist.web;
 
 import com.hardwareassist.dto.CatalogoResponse;
+import com.hardwareassist.dto.ProdutoDTO;
 import com.hardwareassist.dto.RecomendacaoRequest;
 import com.hardwareassist.dto.RecomendacaoResponse;
+import com.hardwareassist.dto.SubstituicaoRequest;
 import com.hardwareassist.service.CatalogoService;
 import com.hardwareassist.service.MontagemService;
 import com.hardwareassist.service.RecomendacaoImpossivelException;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -42,6 +45,19 @@ public class AssistenteController {
     @PostMapping("/recomendacoes")
     public RecomendacaoResponse recomendar(@Valid @RequestBody RecomendacaoRequest request) {
         return montagemService.recomendar(request);
+    }
+
+    @PostMapping("/receitas/recomendadas")
+    public List<RecomendacaoResponse> receitasRecomendadas(
+            @Valid @RequestBody RecomendacaoRequest request) {
+        return montagemService.recomendarPorMarca(request);
+    }
+
+    @PostMapping("/montagens/substitutas")
+    public Map<String, List<ProdutoDTO>> substitutos(@Valid @RequestBody SubstituicaoRequest request) {
+        Map<String, List<ProdutoDTO>> corpo = new LinkedHashMap<>();
+        corpo.put("substitutos", montagemService.substitutos(request.produtoId(), request.montagemIds()));
+        return corpo;
     }
 
     @ExceptionHandler(RecomendacaoImpossivelException.class)

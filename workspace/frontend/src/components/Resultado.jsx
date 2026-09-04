@@ -1,11 +1,12 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
-  CheckCircle2,
-  AlertTriangle,
-  ExternalLink,
-  BadgeCheck,
-  Gauge,
-  RotateCcw,
-} from 'lucide-react'
+  faCircleCheck,
+  faTriangleExclamation,
+  faArrowUpRightFromSquare,
+  faShieldHalved,
+  faGaugeHigh,
+  faRotateLeft,
+} from '@fortawesome/free-solid-svg-icons'
 import CategoriaIcon from './CategoriaIcon'
 import { formatBRL } from '../format'
 
@@ -16,7 +17,7 @@ export default function Resultado({ recomendacao, onReiniciar }) {
     <div className="space-y-6">
       <div className="flex flex-col items-center gap-3 text-center">
         <span className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-400">
-          <CheckCircle2 className="h-6 w-6" />
+          <FontAwesomeIcon icon={faCircleCheck} className="h-6 w-6" />
         </span>
         <div>
           <h3 className="text-xl font-bold text-white">Sua montagem esta pronta!</h3>
@@ -42,7 +43,7 @@ export default function Resultado({ recomendacao, onReiniciar }) {
         </div>
         <div className="card p-4 text-center">
           <span className="flex items-center justify-center gap-1 text-xs text-slate-400">
-            <Gauge className="h-3.5 w-3.5" /> Indice de desempenho
+            <FontAwesomeIcon icon={faGaugeHigh} className="h-3.5 w-3.5" /> Indice de desempenho
           </span>
           <span className="mt-1 block text-lg font-bold text-brand-300">
             {recomendacao.pesoGeralCalculado}
@@ -56,7 +57,7 @@ export default function Resultado({ recomendacao, onReiniciar }) {
         </div>
         <div className="card p-4 text-center">
           <span className="flex items-center justify-center gap-1 text-xs text-slate-400">
-            <BadgeCheck className="h-3.5 w-3.5" /> Compatibilidade
+            <FontAwesomeIcon icon={faShieldHalved} className="h-3.5 w-3.5" /> Compatibilidade
           </span>
           <span className="mt-1 block text-lg font-bold text-emerald-400">Garantida</span>
         </div>
@@ -103,7 +104,7 @@ export default function Resultado({ recomendacao, onReiniciar }) {
                     className="inline-flex items-center gap-1 rounded-lg bg-brand-600/15 px-3 py-1.5 text-xs font-medium text-brand-300 transition hover:bg-brand-600/30"
                   >
                     Ver produto
-                    <ExternalLink className="h-3 w-3" />
+                    <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="h-3 w-3" />
                   </a>
                 </td>
               </tr>
@@ -129,7 +130,7 @@ export default function Resultado({ recomendacao, onReiniciar }) {
               key={i}
               className="flex items-start gap-2 rounded-xl border border-amber-500/20 bg-amber-500/5 px-4 py-3 text-sm text-amber-200"
             >
-              <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+              <FontAwesomeIcon icon={faTriangleExclamation} className="mt-0.5 h-4 w-4 shrink-0" />
               {obs}
             </li>
           ))}
@@ -138,7 +139,7 @@ export default function Resultado({ recomendacao, onReiniciar }) {
 
       <div className="text-center">
         <button onClick={onReiniciar} className="btn-ghost">
-          <RotateCcw className="h-4 w-4" />
+          <FontAwesomeIcon icon={faRotateLeft} className="h-4 w-4" />
           Montar outra configuracao
         </button>
       </div>

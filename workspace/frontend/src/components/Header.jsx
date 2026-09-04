@@ -1,4 +1,5 @@
-import { Cpu, Sparkles } from 'lucide-react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faMicrochip, faWandMagicSparkles } from '@fortawesome/free-solid-svg-icons'
 
 export default function Header() {
   return (
@@ -6,7 +7,7 @@ export default function Header() {
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
         <a href="/" className="flex items-center gap-3">
           <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-600 shadow-lg shadow-brand-600/30">
-            <Cpu className="h-5 w-5 text-white" />
+            <FontAwesomeIcon icon={faMicrochip} className="h-5 w-5 text-white" />
           </span>
           <span>
             <span className="block text-lg font-bold leading-tight text-white">
@@ -16,7 +17,7 @@ export default function Header() {
           </span>
         </a>
         <span className="hidden items-center gap-1.5 rounded-full border border-brand-500/30 bg-brand-500/10 px-3 py-1.5 text-xs font-medium text-brand-300 sm:flex">
-          <Sparkles className="h-3.5 w-3.5" />
+          <FontAwesomeIcon icon={faWandMagicSparkles} className="h-3.5 w-3.5" />
           Recomendacoes inteligentes
         </span>
       </div>

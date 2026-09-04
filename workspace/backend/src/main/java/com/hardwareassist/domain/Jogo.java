@@ -31,6 +31,9 @@ public class Jogo {
     @Column(name = "imagem_url", columnDefinition = "TEXT")
     private String imagemUrl;
 
+    @Column(nullable = false, length = 10)
+    private String tipo = "JOGO";
+
     @Min(1)
     @Max(4)
     @Column(name = "peso_cpu", nullable = false)

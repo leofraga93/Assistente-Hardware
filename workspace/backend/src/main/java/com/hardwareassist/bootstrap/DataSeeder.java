@@ -156,6 +156,10 @@ public class DataSeeder implements CommandLineRunner {
                 null, null, 0, 0, 0, 0, 1));
         lista.add(produto("Mouse Gamer RGB 6400DPI", TipoComponente.PERIFERICO, 220,
                 null, null, 0, 0, 0, 0, 2));
+        lista.add(produto("Monitor 24\" Full HD 100Hz", TipoComponente.PERIFERICO, 800,
+                null, null, 0, 0, 0, 0, 2));
+        lista.add(produto("Monitor 27\" QHD 165Hz", TipoComponente.PERIFERICO, 1600,
+                null, null, 0, 0, 0, 0, 3));
 
         return lista;
     }
@@ -181,20 +185,21 @@ public class DataSeeder implements CommandLineRunner {
 
     private List<Jogo> seedJogos() {
         List<Jogo> jogos = new ArrayList<>();
-        jogos.add(jogo("Valorant", 3, 2, 2));
-        jogos.add(jogo("CS2", 3, 3, 2));
-        jogos.add(jogo("Fortnite", 2, 3, 2));
-        jogos.add(jogo("Cyberpunk 2077", 2, 4, 3));
-        jogos.add(jogo("Elden Ring", 2, 4, 3));
-        jogos.add(jogo("GTA VI", 3, 4, 4));
-        jogos.add(jogo("Edicao de video (Premiere)", 4, 3, 4));
-        jogos.add(jogo("Trabalho / Estudos", 1, 1, 1));
+        jogos.add(jogo("Estudos", "OBJETIVO", 2, 1, 2));
+        jogos.add(jogo("Trabalho", "OBJETIVO", 3, 2, 3));
+        jogos.add(jogo("Lazer", "OBJETIVO", 1, 2, 1));
+        jogos.add(jogo("Escritorio", "OBJETIVO", 2, 1, 2));
+        jogos.add(jogo("Roblox", "JOGO", 2, 3, 2));
+        jogos.add(jogo("Fortnite", "JOGO", 2, 3, 2));
+        jogos.add(jogo("GTA 6", "JOGO", 3, 4, 4));
+        jogos.add(jogo("Cities Skylines 2", "JOGO", 4, 3, 4));
         return jogos;
     }
 
-    private Jogo jogo(String nome, int pesoCpu, int pesoGpu, int pesoRam) {
+    private Jogo jogo(String nome, String tipo, int pesoCpu, int pesoGpu, int pesoRam) {
         Jogo j = new Jogo();
         j.setNome(nome);
+        j.setTipo(tipo);
         j.setPesoCpu(pesoCpu);
         j.setPesoGpu(pesoGpu);
         j.setPesoRam(pesoRam);

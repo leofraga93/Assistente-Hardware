@@ -1,4 +1,5 @@
-import { Award, Cpu } from 'lucide-react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faAward, faMicrochip, faArrowRight } from '@fortawesome/free-solid-svg-icons'
 import { formatBRL } from '../format'
 import CategoriaIcon from './CategoriaIcon'
 
@@ -9,7 +10,7 @@ export default function ReceitasSection({ receitas }) {
     <section className="mx-auto max-w-6xl px-4 py-14">
       <div className="mb-8 text-center">
         <span className="inline-flex items-center gap-2 rounded-full border border-brand-500/30 bg-brand-500/10 px-4 py-1.5 text-xs font-medium text-brand-300">
-          <Award className="h-3.5 w-3.5" />
+          <FontAwesomeIcon icon={faAward} className="h-3.5 w-3.5" />
           Receitas pre-montadas
         </span>
         <h2 className="mt-4 text-2xl font-bold text-white">
@@ -29,7 +30,7 @@ export default function ReceitasSection({ receitas }) {
                 <div>
                   <h3 className="font-bold text-white">{r.nome}</h3>
                   <span className="mt-1 inline-flex items-center gap-1 rounded-full bg-slate-800 px-2.5 py-0.5 text-xs font-medium text-brand-300">
-                    <Cpu className="h-3 w-3" />
+                    <FontAwesomeIcon icon={faMicrochip} className="h-3 w-3" />
                     {r.arquiteturaMarca}
                   </span>
                 </div>
@@ -59,9 +60,10 @@ export default function ReceitasSection({ receitas }) {
                   href={r.itens[0]?.linkAfiliado}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-xs font-semibold text-brand-300 hover:text-brand-200"
+                  className="inline-flex items-center gap-1 text-xs font-semibold text-brand-300 hover:text-brand-200"
                 >
-                  Ver pecas por peca &rarr;
+                  Ver pecas por peca
+                  <FontAwesomeIcon icon={faArrowRight} className="h-3 w-3" />
                 </a>
               </div>
             </div>
