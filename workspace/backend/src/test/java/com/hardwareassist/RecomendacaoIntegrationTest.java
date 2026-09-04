@@ -89,6 +89,61 @@ class RecomendacaoIntegrationTest {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    void receitasRecomendadasRetornaAmdEIntel() throws Exception {
+        String body = """
+                {"orcamento": 5000, "jogoIds": [5, 6], "incluiPerifericos": true}
+                """;
+        String resposta = mockMvc.perform(post("/api/receitas/recomendadas")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andReturn().getResponse().getContentAsString();
+
+        JsonNode json = objectMapper.readTree(resposta);
+        assertThat(json.get(0).get("plataforma").asText()).startsWith("AMD");
+        assertThat(json.get(1).get("plataforma").asText()).startsWith("INTEL");
+        assertThat(json.get(0).get("itens").size()).isGreaterThanOrEqualTo(7);
+    }
+
+    @Test
+    void substituicaoRetornaAlternativasMaisBaratasDaMesmaCategoria() throws Exception {
+        String bodyMontagem = """
+                {"orcamento": 5000, "jogoIds": [5, 6]}
+                """;
+        String montagem = mockMvc.perform(post("/api/recomendacoes")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(bodyMontagem))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        JsonNode build = objectMapper.readTree(montagem);
+        JsonNode gpu = findItem(build, "GPU");
+        long gpuId = gpu.get("id").asLong();
+        double precoGpu = gpu.get("preco").asDouble();
+
+        String ids = build.get("itens").findValues("id").stream()
+                .map(n -> n.asLong() + "")
+                .collect(java.util.stream.Collectors.joining(","));
+
+        String body = """
+                {"produtoId": %d, "montagemIds": [%s]}
+                """.formatted(gpuId, ids);
+
+        String resposta = mockMvc.perform(post("/api/montagens/substitutas")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        JsonNode json = objectMapper.readTree(resposta);
+        for (JsonNode alt : json.get("substitutos")) {
+            assertThat(alt.get("categoria").asText()).isEqualTo("GPU");
+            assertThat(alt.get("preco").asDouble()).isLessThan(precoGpu);
+        }
+    }
+
     private JsonNode findItem(JsonNode recomendacao, String categoria) {
         for (JsonNode item : recomendacao.get("itens")) {
             if (item.get("categoria").asText().equals(categoria)) {

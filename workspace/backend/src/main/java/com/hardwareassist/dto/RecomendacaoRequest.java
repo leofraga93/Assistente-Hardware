@@ -11,5 +11,10 @@ public record RecomendacaoRequest(
         @DecimalMin("300")
         BigDecimal orcamento,
         List<Long> jogoIds,
-        String marca) {
+        String marca,
+        Boolean incluiPerifericos) {
+
+    public boolean comPerifericos() {
+        return Boolean.TRUE.equals(incluiPerifericos);
+    }
 }

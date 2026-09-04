@@ -6,6 +6,7 @@ import com.hardwareassist.domain.Produto;
 import com.hardwareassist.domain.ReceitaBase;
 import com.hardwareassist.domain.TipoComponente;
 import com.hardwareassist.domain.TipoRam;
+import com.hardwareassist.dto.ProdutoDTO;
 import com.hardwareassist.dto.RecomendacaoRequest;
 import com.hardwareassist.dto.RecomendacaoResponse;
 import com.hardwareassist.repository.JogoRepository;
@@ -34,10 +35,76 @@ public class MontagemService {
     }
 
     public RecomendacaoResponse recomendar(RecomendacaoRequest req) {
+        Montagem melhor = melhorPorMarcas(req, List.of("AMD", "INTEL"));
+        if (melhor == null) {
+            throw new RecomendacaoImpossivelException(
+                    "Nao foi possivel montar uma configuracao com esse orcamento.");
+        }
+        return paraResposta(melhor);
+    }
+
+    public List<RecomendacaoResponse> recomendarPorMarca(RecomendacaoRequest req) {
+        List<RecomendacaoResponse> resultado = new ArrayList<>();
+        for (String marca : List.of("AMD", "INTEL")) {
+            Montagem m = melhorPorMarcas(req, List.of(marca));
+            if (m != null) {
+                resultado.add(paraResposta(m));
+            }
+        }
+        if (resultado.isEmpty()) {
+            throw new RecomendacaoImpossivelException(
+                    "Nao foi possivel montar uma configuracao com esse orcamento.");
+        }
+        return resultado;
+    }
+
+    public List<ProdutoDTO> substitutos(Long produtoId, List<Long> montagemIds) {
+        Produto alvo = produtoRepository.findById(produtoId)
+                .orElseThrow(() -> new RecomendacaoImpossivelException("Produto nao encontrado."));
+
+        List<Produto> build = montagemIds == null || montagemIds.isEmpty()
+                ? List.of()
+                : produtoRepository.findAllById(montagemIds);
+
+        return poolAlternativas(alvo, build).stream()
+                .filter(p -> !p.getId().equals(produtoId))
+                .filter(p -> p.getPreco().compareTo(alvo.getPreco()) < 0)
+                .sorted(Comparator.comparing(Produto::getPreco).reversed())
+                .map(ProdutoDTO::from)
+                .toList();
+    }
+
+    private Montagem melhorPorMarcas(RecomendacaoRequest req, List<String> marcas) {
+        int[] pesos = calcularPesos(req);
+        BigDecimal orcamento = req.orcamento();
+        boolean perif = req.comPerifericos();
+
+        Montagem melhor = null;
+        for (String marca : marcas) {
+            for (ArquiteturaPlataforma plataforma : plataformasCandidatas(marca)) {
+                Montagem m = montar(plataforma, orcamento, pesos[0], pesos[1], pesos[2], perif);
+                if (m == null) {
+                    continue;
+                }
+                if (melhor == null || ehMelhor(m, melhor, orcamento)) {
+                    melhor = m;
+                }
+            }
+        }
+        if (melhor == null) {
+            return null;
+        }
+        ajustarOrcamento(melhor, orcamento);
+        tentarUpgrade(melhor, orcamento);
+        corrigirFonte(melhor, orcamento);
+        preencherObservacoes(melhor, orcamento);
+        return melhor;
+    }
+
+    private int[] calcularPesos(RecomendacaoRequest req) {
         int wCpu = 1;
         int wGpu = 1;
         int wRam = 1;
-
         if (req.jogoIds() != null && !req.jogoIds().isEmpty()) {
             for (Jogo j : jogoRepository.findAllById(req.jogoIds())) {
                 wCpu = Math.max(wCpu, j.getPesoCpu());
@@ -45,31 +112,7 @@ public class MontagemService {
                 wRam = Math.max(wRam, j.getPesoRam());
             }
         }
-
-        BigDecimal orcamento = req.orcamento();
-        Montagem melhor = null;
-
-        for (ArquiteturaPlataforma plataforma : plataformasCandidatas(req.marca())) {
-            Montagem m = montar(plataforma, orcamento, wCpu, wGpu, wRam);
-            if (m == null) {
-                continue;
-            }
-            if (melhor == null || ehMelhor(m, melhor, orcamento)) {
-                melhor = m;
-            }
-        }
-
-        if (melhor == null) {
-            throw new RecomendacaoImpossivelException(
-                    "Nao foi possivel montar uma configuracao com esse orcamento.");
-        }
-
-        ajustarOrcamento(melhor, orcamento);
-        tentarUpgrade(melhor, orcamento);
-        corrigirFonte(melhor, orcamento);
-        preencherObservacoes(melhor, orcamento);
-
-        return paraResposta(melhor);
+        return new int[]{wCpu, wGpu, wRam};
     }
 
     private boolean ehMelhor(Montagem a, Montagem b, BigDecimal orcamento) {
@@ -97,13 +140,16 @@ public class MontagemService {
     }
 
     private Montagem montar(ArquiteturaPlataforma plataforma, BigDecimal orcamento,
-                            int wCpu, int wGpu, int wRam) {
-        BigDecimal pctPlaca = bd(0.12);
-        BigDecimal pctFonte = bd(0.09);
+                            int wCpu, int wGpu, int wRam, boolean incluiPerifericos) {
+        BigDecimal pctPlaca = bd(incluiPerifericos ? 0.11 : 0.12);
+        BigDecimal pctFonte = bd(incluiPerifericos ? 0.08 : 0.09);
         BigDecimal pctGabinete = bd(0.04);
-        BigDecimal pctArmazenamento = bd(0.08);
+        BigDecimal pctArmazenamento = bd(incluiPerifericos ? 0.07 : 0.08);
+        BigDecimal pctMonitor = bd(incluiPerifericos ? 0.08 : 0);
+        BigDecimal pctAcessorios = bd(incluiPerifericos ? 0.03 : 0);
         BigDecimal resto = bd(1).subtract(pctPlaca).subtract(pctFonte)
-                .subtract(pctGabinete).subtract(pctArmazenamento);
+                .subtract(pctGabinete).subtract(pctArmazenamento)
+                .subtract(pctMonitor).subtract(pctAcessorios);
 
         double rawCpu = 25.0 * wCpu;
         double rawGpu = 30.0 * wGpu;
@@ -144,7 +190,7 @@ public class MontagemService {
             return null;
         }
 
-        int consumo = consumoTotal(cpu, gpu, ram, null, null, null);
+        int consumo = consumoTotal(cpu, gpu, ram, placa, null, null);
         List<Produto> fontes = produtoRepository.findByCategoria(TipoComponente.FONTE);
         Produto fonte = escolherFonte(fontes, consumo, orcamento.multiply(pctFonte));
         if (fonte == null) {
@@ -156,6 +202,18 @@ public class MontagemService {
         List<Produto> armazenamentos = produtoRepository.findByCategoria(TipoComponente.ARMAZENAMENTO);
         Produto armazenamento = escolher(armazenamentos, orcamento.multiply(pctArmazenamento));
 
+        Produto monitor = null;
+        Produto acessorios = null;
+        if (incluiPerifericos) {
+            List<Produto> perifericos = produtoRepository.findByCategoria(TipoComponente.PERIFERICO);
+            monitor = escolher(perifericos.stream()
+                    .filter(p -> p.getNome().startsWith("Monitor")).toList(),
+                    orcamento.multiply(pctMonitor));
+            acessorios = escolher(perifericos.stream()
+                    .filter(p -> !p.getNome().startsWith("Monitor")).toList(),
+                    orcamento.multiply(pctAcessorios));
+        }
+
         Montagem m = new Montagem();
         m.plataforma = plataforma.name();
         m.addItem(cpu);
@@ -165,6 +223,8 @@ public class MontagemService {
         m.addItem(fonte);
         m.addItem(gabinete);
         m.addItem(armazenamento);
+        m.addItem(monitor);
+        m.addItem(acessorios);
         return m;
     }
 
@@ -252,10 +312,9 @@ public class MontagemService {
     }
 
     private void tentarUpgrade(Montagem m, BigDecimal orcamento) {
-        int[] prioridade = new int[]{4, 2, 1, 0, 3, 5, 6};
         for (int tentativa = 0; tentativa < 8 && m.total.compareTo(orcamento) < 0; tentativa++) {
             MelhorUpgrade melhor = null;
-            for (Produto atual : ordenarPorPrioridade(m.itens, prioridade)) {
+            for (Produto atual : m.itens) {
                 if (atual.getCategoria() == TipoComponente.PLACA_MAE) {
                     continue;
                 }
@@ -335,22 +394,6 @@ public class MontagemService {
         }
     }
 
-    private List<Produto> ordenarPorPrioridade(List<Produto> itens, int[] prioridade) {
-        return itens.stream()
-                .sorted(Comparator.comparingInt(
-                        p -> posicaoPrioridade(p.getCategoria(), prioridade)))
-                .toList();
-    }
-
-    private int posicaoPrioridade(TipoComponente categoria, int[] prioridade) {
-        for (int i = 0; i < prioridade.length; i++) {
-            if (categoria.ordinal() == prioridade[i]) {
-                return i;
-            }
-        }
-        return prioridade.length;
-    }
-
     private List<Produto> poolPara(Produto atual, Montagem m) {
         return switch (atual.getCategoria()) {
             case CPU -> produtoRepository.findByCategoriaAndPlataforma(
@@ -359,8 +402,74 @@ public class MontagemService {
                     TipoComponente.PLACA_MAE, ArquiteturaPlataforma.valueOf(m.plataforma));
             case RAM -> produtoRepository.findByCategoriaAndTipoMemoria(
                     TipoComponente.RAM, atual.getTipoMemoria());
+            case PERIFERICO -> {
+                boolean monitor = atual.getNome().startsWith("Monitor");
+                yield produtoRepository.findByCategoria(TipoComponente.PERIFERICO).stream()
+                        .filter(p -> p.getNome().startsWith("Monitor") == monitor)
+                        .toList();
+            }
             default -> produtoRepository.findByCategoria(atual.getCategoria());
         };
+    }
+
+    private List<Produto> poolAlternativas(Produto alvo, List<Produto> build) {
+        return switch (alvo.getCategoria()) {
+            case CPU -> {
+                Produto placa = itemPorCategoria(build, TipoComponente.PLACA_MAE);
+                yield placa != null && placa.getPlataforma() != null
+                        ? produtoRepository.findByCategoriaAndPlataforma(
+                                TipoComponente.CPU, placa.getPlataforma())
+                        : produtoRepository.findByCategoria(TipoComponente.CPU);
+            }
+            case PLACA_MAE -> {
+                Produto ram = itemPorCategoria(build, TipoComponente.RAM);
+                List<Produto> placas = produtoRepository.findByCategoriaAndPlataforma(
+                        TipoComponente.PLACA_MAE, alvo.getPlataforma());
+                if (ram != null && ram.getTipoMemoria() != null) {
+                    placas = placas.stream()
+                            .filter(p -> p.getTipoMemoria() == ram.getTipoMemoria())
+                            .toList();
+                }
+                yield placas;
+            }
+            case RAM -> {
+                Produto placa = itemPorCategoria(build, TipoComponente.PLACA_MAE);
+                int slots = placa != null && placa.getSlotsRamFornecidos() != null
+                        ? placa.getSlotsRamFornecidos() : 0;
+                yield produtoRepository.findByCategoriaAndTipoMemoria(
+                                TipoComponente.RAM, alvo.getTipoMemoria()).stream()
+                        .filter(r -> slots <= 0 || r.getSlotsRamRequeridos() <= slots)
+                        .toList();
+            }
+            case FONTE -> {
+                int consumo = consumoDaBuild(build);
+                yield produtoRepository.findByCategoria(TipoComponente.FONTE).stream()
+                        .filter(f -> f.getPotenciaWattsFornecida() >= consumo)
+                        .toList();
+            }
+            default -> produtoRepository.findByCategoria(alvo.getCategoria());
+        };
+    }
+
+    private int consumoDaBuild(List<Produto> build) {
+        int consumo = 0;
+        for (Produto p : build) {
+            if (p != null && p.getConsumoWatts() != null) {
+                consumo += p.getConsumoWatts();
+            }
+        }
+        Produto ram = itemPorCategoria(build, TipoComponente.RAM);
+        if (ram != null && ram.getSlotsRamRequeridos() != null) {
+            consumo += ram.getSlotsRamRequeridos() * 10;
+        }
+        return consumo + 60;
+    }
+
+    private Produto itemPorCategoria(List<Produto> build, TipoComponente categoria) {
+        return build.stream()
+                .filter(i -> i.getCategoria() == categoria)
+                .findFirst()
+                .orElse(null);
     }
 
     private int consumoTotal(Produto cpu, Produto gpu, Produto ram,

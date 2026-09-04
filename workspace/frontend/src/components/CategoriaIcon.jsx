@@ -1,27 +1,32 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
-  Cpu,
-  MonitorPlay,
-  MemoryStick,
-  CircuitBoard,
-  Zap,
-  Box,
-  HardDrive,
-  Keyboard,
-  HelpCircle,
-} from 'lucide-react'
+  faMicrochip,
+  faVideo,
+  faMemory,
+  faServer,
+  faBolt,
+  faBox,
+  faHardDrive,
+  faKeyboard,
+  faDisplay,
+  faCircleQuestion,
+} from '@fortawesome/free-solid-svg-icons'
 
 const icons = {
-  CPU: Cpu,
-  GPU: MonitorPlay,
-  RAM: MemoryStick,
-  PLACA_MAE: CircuitBoard,
-  FONTE: Zap,
-  GABINETE: Box,
-  ARMAZENAMENTO: HardDrive,
-  PERIFERICO: Keyboard,
+  CPU: faMicrochip,
+  GPU: faVideo,
+  RAM: faMemory,
+  PLACA_MAE: faServer,
+  FONTE: faBolt,
+  GABINETE: faBox,
+  ARMAZENAMENTO: faHardDrive,
+  PERIFERICO: faKeyboard,
 }
 
-export default function CategoriaIcon({ categoria, className = 'h-5 w-5' }) {
-  const Icon = icons[categoria] || HelpCircle
-  return <Icon className={className} />
+export default function CategoriaIcon({ categoria, nome, className = 'h-5 w-5' }) {
+  let icon = icons[categoria] || faCircleQuestion
+  if (categoria === 'PERIFERICO' && nome && nome.startsWith('Monitor')) {
+    icon = faDisplay
+  }
+  return <FontAwesomeIcon icon={icon} className={className} />
 }

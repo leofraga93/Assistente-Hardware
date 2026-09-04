@@ -13,11 +13,20 @@ export async function getCatalogo() {
   return handle(res)
 }
 
-export async function recomendar({ orcamento, jogoIds, marca }) {
-  const res = await fetch(`${API_BASE}/api/recomendacoes`, {
+export async function receitasRecomendadas({ orcamento, jogoIds, incluiPerifericos }) {
+  const res = await fetch(`${API_BASE}/api/receitas/recomendadas`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ orcamento, jogoIds, marca }),
+    body: JSON.stringify({ orcamento, jogoIds, incluiPerifericos }),
+  })
+  return handle(res)
+}
+
+export async function substitutos(produtoId, montagemIds) {
+  const res = await fetch(`${API_BASE}/api/montagens/substitutas`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ produtoId, montagemIds }),
   })
   return handle(res)
 }
