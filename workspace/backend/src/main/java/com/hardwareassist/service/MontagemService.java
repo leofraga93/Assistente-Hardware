@@ -283,12 +283,11 @@ public class MontagemService {
         for (int tentativa = 0; tentativa < 5 && m.total.compareTo(orcamento) > 0; tentativa++) {
             boolean trocou = false;
             List<Produto> ordenados = m.itens.stream()
-                    .sorted(Comparator.comparing(Produto::getPreco).reversed())
+                    .filter(i -> i.getCategoria() != TipoComponente.PLACA_MAE)
+                    .sorted(Comparator.comparingInt(this::prioridadeReducao)
+                            .thenComparing(Comparator.comparing(Produto::getPreco).reversed()))
                     .toList();
             for (Produto atual : ordenados) {
-                if (atual.getCategoria() == TipoComponente.PLACA_MAE) {
-                    continue;
-                }
                 List<Produto> pool = poolPara(atual, m);
                 Produto substituto = pool.stream()
                         .filter(p -> !p.getId().equals(atual.getId()))
@@ -309,6 +308,14 @@ public class MontagemService {
                 break;
             }
         }
+    }
+
+    private int prioridadeReducao(Produto p) {
+        return switch (p.getCategoria()) {
+            case GPU -> 0;
+            case CPU, RAM -> 2;
+            default -> 1;
+        };
     }
 
     private void tentarUpgrade(Montagem m, BigDecimal orcamento) {
@@ -462,7 +469,7 @@ public class MontagemService {
         if (ram != null && ram.getSlotsRamRequeridos() != null) {
             consumo += ram.getSlotsRamRequeridos() * 10;
         }
-        return consumo + 60;
+        return consumo + ConsumoMontagem.MARGEM_WATTS;
     }
 
     private Produto itemPorCategoria(List<Produto> build, TipoComponente categoria) {
@@ -483,7 +490,7 @@ public class MontagemService {
         if (ram != null && ram.getSlotsRamRequeridos() != null) {
             consumo += ram.getSlotsRamRequeridos() * 10;
         }
-        return consumo + 60;
+        return consumo + ConsumoMontagem.MARGEM_WATTS;
     }
 
     private RecomendacaoResponse paraResposta(Montagem m) {
@@ -593,7 +600,7 @@ public class MontagemService {
             if (ram != null && ram.getSlotsRamRequeridos() != null) {
                 consumo += ram.getSlotsRamRequeridos() * 10;
             }
-            consumoTotal = consumo + 60;
+            consumoTotal = consumo + ConsumoMontagem.MARGEM_WATTS;
         }
 
         private Produto itemPorCategoria(TipoComponente categoria) {
