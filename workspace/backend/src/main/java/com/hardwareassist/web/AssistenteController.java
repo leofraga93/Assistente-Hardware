@@ -1,13 +1,16 @@
 package com.hardwareassist.web;
 
 import com.hardwareassist.dto.CatalogoResponse;
+import com.hardwareassist.dto.ConfiguracaoValidacaoRequest;
 import com.hardwareassist.dto.ProdutoDTO;
 import com.hardwareassist.dto.RecomendacaoRequest;
 import com.hardwareassist.dto.RecomendacaoResponse;
 import com.hardwareassist.dto.SubstituicaoRequest;
+import com.hardwareassist.dto.ValidacaoConfiguracaoResponse;
 import com.hardwareassist.service.CatalogoService;
 import com.hardwareassist.service.MontagemService;
 import com.hardwareassist.service.RecomendacaoImpossivelException;
+import com.hardwareassist.service.ValidacaoConfiguracaoService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,10 +34,14 @@ public class AssistenteController {
 
     private final CatalogoService catalogoService;
     private final MontagemService montagemService;
+    private final ValidacaoConfiguracaoService validacaoConfiguracaoService;
 
-    public AssistenteController(CatalogoService catalogoService, MontagemService montagemService) {
+    public AssistenteController(CatalogoService catalogoService,
+                                MontagemService montagemService,
+                                ValidacaoConfiguracaoService validacaoConfiguracaoService) {
         this.catalogoService = catalogoService;
         this.montagemService = montagemService;
+        this.validacaoConfiguracaoService = validacaoConfiguracaoService;
     }
 
     @GetMapping("/catalogo")
@@ -58,6 +65,18 @@ public class AssistenteController {
         Map<String, List<ProdutoDTO>> corpo = new LinkedHashMap<>();
         corpo.put("substitutos", montagemService.substitutos(request.produtoId(), request.montagemIds()));
         return corpo;
+    }
+
+    @PostMapping("/configuracao/validar")
+    public ResponseEntity<Object> validarConfiguracao(
+            @Valid @RequestBody ConfiguracaoValidacaoRequest request) {
+        ValidacaoConfiguracaoResponse resultado = validacaoConfiguracaoService.validar(request.produtoIds());
+        if (resultado.valida()) {
+            return ResponseEntity.ok(resultado);
+        }
+        Map<String, String> corpo = new LinkedHashMap<>();
+        corpo.put("mensagem", String.join(" ", resultado.problemas()));
+        return ResponseEntity.badRequest().body(corpo);
     }
 
     @ExceptionHandler(RecomendacaoImpossivelException.class)

@@ -144,6 +144,84 @@ class RecomendacaoIntegrationTest {
         }
     }
 
+    @Test
+    void validarConfiguracaoAceitaMontagemCompativel() throws Exception {
+        String body = """
+                {"produtoIds": [1, 12, 20, 24, 32]}
+                """;
+        mockMvc.perform(post("/api/configuracao/validar")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.valida").value(true))
+                .andExpect(jsonPath("$.problemas.length()").value(0));
+    }
+
+    @Test
+    void validarConfiguracaoRejeitaSocketIncompativel() throws Exception {
+        String body = """
+                {"produtoIds": [1, 12, 20, 26, 32]}
+                """;
+        mockMvc.perform(post("/api/configuracao/validar")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.mensagem").value(
+                        org.hamcrest.Matchers.containsString("Socket incompativel")));
+    }
+
+    @Test
+    void validarConfiguracaoRejeitaTipoDeMemoriaDiferente() throws Exception {
+        String body = """
+                {"produtoIds": [1, 12, 22, 24, 32]}
+                """;
+        mockMvc.perform(post("/api/configuracao/validar")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.mensagem").value(
+                        org.hamcrest.Matchers.containsString("Memoria incompativel")));
+    }
+
+    @Test
+    void validarConfiguracaoRejeitaExcessoDeSlotsDeRam() throws Exception {
+        String body = """
+                {"produtoIds": [7, 12, 20, 21, 28, 32]}
+                """;
+        mockMvc.perform(post("/api/configuracao/validar")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.mensagem").value(
+                        org.hamcrest.Matchers.containsString("slots de memoria excedido")));
+    }
+
+    @Test
+    void validarConfiguracaoRejeitaFonteInsuficiente() throws Exception {
+        String body = """
+                {"produtoIds": [7, 19, 20, 28, 32]}
+                """;
+        mockMvc.perform(post("/api/configuracao/validar")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.mensagem").value(
+                        org.hamcrest.Matchers.containsString("Fonte insuficiente")));
+    }
+
+    @Test
+    void validarConfiguracaoRejeitaProdutoInexistente() throws Exception {
+        String body = """
+                {"produtoIds": [9999]}
+                """;
+        mockMvc.perform(post("/api/configuracao/validar")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.mensagem").value(
+                        org.hamcrest.Matchers.containsString("nao foram encontrados")));
+    }
+
     private JsonNode findItem(JsonNode recomendacao, String categoria) {
         for (JsonNode item : recomendacao.get("itens")) {
             if (item.get("categoria").asText().equals(categoria)) {
