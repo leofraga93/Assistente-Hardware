@@ -1,8 +1,11 @@
 # ARCHITECTURE.md — Contexto, Escopo e Posição do Projeto
 
-> Documento vivo de contexto do projeto **Hardware Assistant** (assistente de montagem de PC).
-> Deve ser lido no início de qualquer sessão e **atualizado ao final de cada interação** que
-> altere código, fluxo, modelo de dados ou decisão de arquitetura.
+> Mapa e checklist do **Hardware Assistant** (assistente de montagem de PC).
+> Caminho: `docs/prd/ARCHITECTURE.md`. Regras globais de agente ficam em `AGENTS.md` na raiz.
+> Specs de implementação: `docs/specs/`. Cada spec deve apontar um item deste checklist;
+> ao entregar, marcar o item como concluído.
+> Lido no início de cada sessão e **atualizado ao final** de qualquer interação que altere
+> código, fluxo, modelo de dados, docs ou decisão de arquitetura.
 
 ---
 
@@ -17,7 +20,9 @@ novo endpoint), a IA DEVE validar que a estrutura proposta:
 4. É coerente com o **estado e o checklist** (seções 2 a 5) — se divergir, ajustar a proposta
    ou atualizar este documento antes de implementar;
 5. Em caso de mudança estrutural (novo ENUM, novo campo, novo relacionamento, novo fluxo),
-   este documento deve ser atualizado na mesma entrega.
+   este documento deve ser atualizado na mesma entrega;
+6. Existe spec em `docs/specs/` ligada a um item das seções 2 ou 3; implementação sem spec
+   não entra. Entrega marca o item do checklist e o status da spec.
 
 Nenhuma implementação pode introduzir valor de enum fora da lista canônica nem relacionamento
 sem declarar as chaves aqui.
@@ -26,20 +31,29 @@ sem declarar as chaves aqui.
 
 ## 2. Posição atual do projeto (leia primeiro)
 
-**Fase atual:** Produto funcional ponta a ponta (wizard → opções AMD/Intel → configurador →
-substituição) entregue e validado. Interface 100% migrada para Font Awesome. Esteira de validação
-de configuração (`POST /api/configuracao/validar`) e fallback GPU-first implementados no backend.
+**Fase atual:** Produto funcional ponta a ponta em **dev local** (wizard → opções AMD/Intel →
+configurador → substituição). Interface 100% Font Awesome. Esteira de validação e fallback
+GPU-first no backend. Docs reorganizados (`AGENTS.md` + `docs/prd` + `docs/specs`).
+**Produção Vercel:** apenas o frontend estático; `/api/catalogo` retorna 404. O wizard agora
+explica a falha da API (nao mais passo Objetivo em branco). Falta publicar o Spring Boot.
 
 - [x] Backend Spring Boot 3 + H2 (modo PostgreSQL) com seed de catálogo
 - [x] API de catálogo, recomendação por marca e substituição de peças
 - [x] Frontend React + Vite + Tailwind com fluxo em 3 fases (wizard/opcoes/config)
 - [x] Migração de ícones `lucide-react` → Font Awesome em todo o frontend
 - [x] Build de produção passando; servidores dev/preview ativos
-- [x] ARCHITECTURE.md + AGENTS.md criados
+- [x] AGENTS.md (regras globais) + PRD em `docs/prd/ARCHITECTURE.md` + pasta `docs/specs/`
+- [x] Estrutura docs/prd + docs/specs e fluxo spec-first
+      (spec `docs/specs/2026-09-20-reorganizacao-docs-spec-first.md`)
 - [x] Esteira `POST /api/configuracao/validar` (socket, tipo RAM, slots, fonte) + margem 50W
 - [x] Fallback de orcamento reduz GPU primeiro preservando CPU/RAM
+- [x] Código `workspace/backend/` e `workspace/frontend/` versionados no git
+- [x] Wizard mostra erro amigavel se GET /api/catalogo falhar
+      (spec `docs/specs/2026-09-20-wizard-erro-amigavel-catalogo.md`)
+- [ ] Publicar API `/api/catalogo` em host Java (Render, Railway, Fly, Cloud Run ou similar)
+      e apontar o front com `VITE_API_BASE`
+      (spec `docs/specs/2026-09-20-vercel-wizard-objetivo-sem-catalogo.md`)
 - [ ] Definir/limpar pastas vazias: `frontend/src/data/` e `scripts/` (decidir uso ou solicitar remoção)
-- [ ] Versionar `backend/` e `frontend/` no git (hoje o repo tem só `.gitignore` commitado)
 - [ ] (Opcional) Avaliar upgrade `@fortawesome/react-fontawesome` 0.2.x → 3.1.1
       (0.2.x emite aviso de depreciação no install; validar API antes)
 
@@ -63,7 +77,11 @@ Estado de cada módulo e onde ele vive.
 | Tela de opções (AMD/Intel) | `components/OpcoesReceitas.jsx` | Entregue |
 | Configurador + modal de substituição | `components/Configurator.jsx`, `SubstitutionModal.jsx` | Entregue |
 | Ícones (sem lucide/emoji) | Todos os `.jsx` — ver mapa na seção 10 | Entregue |
-| Proxy dev `/api` → `:8080` e preview | `frontend/vite.config.js` | Entregue |
+| Proxy dev `/api` → `:8080` e preview | `frontend/vite.config.js` | Entregue (só local) |
+| Deploy Vercel do frontend | `vercel.json` | Entregue (estático) |
+| Erro amigável se catálogo falhar | `CatalogoStatus.jsx` + `App.jsx` | Entregue |
+| `VITE_API_BASE` | `frontend/src/api.js` | Entregue (vazio = mesma origem) |
+| API em produção (host Java) | Render / Railway / Fly / Cloud Run + env Vercel | Pendente |
 
 Componentes legados sem importação ativa (mantidos migrados, candidatos a remoção sob aprovação):
 `ReceitasSection.jsx`, `Resultado.jsx`, `StepJogos.jsx`, `StepMarca.jsx`, `BudgetStep.jsx`/`StepOrcamento.jsx`
@@ -73,8 +91,8 @@ Componentes legados sem importação ativa (mantidos migrados, candidatos a remo
 
 ## 4. Repositório e convenções
 
-- Raiz: `/workspace`. Branch/repo: um commit `a75a3d8 Initial commit` contendo apenas `.gitignore`.
-  `backend/` e `frontend/` estão **untracked** (pendência de versionamento, se o usuário pedir).
+- Raiz do git: repositório `Assistente-Hardware`. Código em `workspace/backend/` e
+  `workspace/frontend/`. Docs: `AGENTS.md` (raiz), `docs/prd/ARCHITECTURE.md`, `docs/specs/`.
 - Idiomas: código/UI em português sem acentos na maior parte (`components/` e backend),
   com exceções pontuais preservadas (ex.: subtítulo do `Header` usa acento). Não "corrigir" textos sem pedido.
 - Backend: Java 17, Spring Boot 3.3.5, Maven, Lombok, Spring Data JPA.
@@ -83,7 +101,7 @@ Componentes legados sem importação ativa (mantidos migrados, candidatos a remo
   `resources/db/schema.sql` documenta o modelo de referência PostgreSQL.
 - Frontend: React 18 + Vite 5 + Tailwind 3 + Font Awesome 6 (SVG core). Sem webfont CSS importado:
   os ícones são `<svg>` com cor `currentColor`; o tamanho vem das classes Tailwind `h-*/w-*`.
-- Sem emoji e sem comentários de código desnecessários.
+- Proibição de emoji e comentários desnecessários: regra global em `AGENTS.md`.
 
 ---
 
@@ -155,9 +173,13 @@ ou HTTP 400 `{mensagem}`. Regra de monitor/`isMonitor` não participa da cadeia 
 
 - Frontend dev: `:5173` (host true) com proxy `/api` → `http://localhost:8080` (sem CORS).
 - Backend: `:8080`.
-- Preview atual: `https://5173-4470dbb29178fff8.monkeycode-ai.live` (`allowedHosts: ['.monkeycode-ai.live']`).
-- Termos ativos ao fim da última sessão: backend `term_1788566368789_15`, frontend `term_1788451967725_14`
-  (podem ter expirado por timeout — reiniciar antes de validar).
+- Vercel (`https://assistente-hardware.vercel.app`): só o React. Sem Java, `/api/catalogo` = 404.
+  O wizard mostra `CatalogoStatus` (erro amigável + tentar novamente).
+- Produção do front: `VITE_API_BASE` (build-time) aponta para a URL pública do Spring Boot,
+  sem barra final. Vazio = mesma origem (dev com proxy Vite).
+- Hosts no estilo Vercel (git push, HTTPS) para **Java**: Render, Railway, Fly.io, Google Cloud Run,
+  Azure Container Apps. A Vercel não substitui esses para o JAR/Maven atual.
+- CORS do backend (`allowedOrigins *`) cobre o front na Vercel quando a API estiver em outro domínio.
 
 ---
 
@@ -294,16 +316,16 @@ Campos auxiliares do frontend:
 ## 9. Como rodar e validar
 
 ```bash
-# Backend (porta 8080) — roda em foreground/background terminal
-cd /workspace/backend && mvn -q spring-boot:run
+# Backend (porta 8080)
+cd workspace/backend && mvn -q spring-boot:run
 
-# Testes do backend (12 testes de integração)
-cd /workspace/backend && mvn -q test
+# Testes de integracao (12)
+cd workspace/backend && mvn -q test
 
 # Frontend (porta 5173)
-cd /workspace/frontend && npm install --no-audit --no-fund
-cd /workspace/frontend && npm run dev      # dev server
-cd /workspace/frontend && npm run build    # build de producao (deve passar)
+cd workspace/frontend && npm install --no-audit --no-fund
+cd workspace/frontend && npm run dev
+cd workspace/frontend && npm run build
 
 # Smoke test E2E
 curl -s http://localhost:8080/api/catalogo
@@ -319,6 +341,8 @@ curl -s -X POST http://localhost:8080/api/configuracao/validar \
 ```
 
 Após qualquer mudança de frontend, validar `npm run build`; após mudança de backend, `mvn test`.
+Smoke em produção Vercel: `GET https://assistente-hardware.vercel.app/api/catalogo` deve ser 200
+quando a API estiver publicada (hoje 404).
 
 ---
 
@@ -419,10 +443,30 @@ mantiveram-se `&middot;` / `\u00B7` / `\u2014` como separadores de texto (não s
 
 - (Adicionar entradas a cada nova interacao: o que foi pedido, o que foi feito, validacoes, estado final.)
 
+### Sessão 5 — Docs spec-first + diagnóstico Vercel (2026-09-20)
+
+- `AGENTS.md` na raiz: regras globais (spec-first, ENUM/FK via PRD, zero emoji / só Font Awesome).
+- `ARCHITECTURE.md` movido para `docs/prd/ARCHITECTURE.md` (mapa e checklist).
+- Pasta `docs/specs/` criada. Specs desta sessão:
+  - `2026-09-20-reorganizacao-docs-spec-first.md` (entregue, checklist marcado).
+  - `2026-09-20-vercel-wizard-objetivo-sem-catalogo.md` (diagnosticada, correção pendente).
+- Causa do wizard Objetivo vazio na Vercel: frontend estático sem backend; `/api/catalogo` = 404;
+  `App.jsx` zera o catálogo; `ObjectiveStep` não renderiza cards. Orçamento não usa API.
+- Nenhuma mudança de código de produto nesta sessão.
+
+### Sessão 6 — Erro amigável do catálogo + `VITE_API_BASE` (2026-09-20)
+
+- Spec `docs/specs/2026-09-20-wizard-erro-amigavel-catalogo.md` entregue.
+- `CatalogoStatus.jsx`: carregando / erro (Font Awesome) / conteudo; botao tentar novamente.
+- `App.jsx` distingue status do catalogo; banner de erro nos passos 1 e 4; "Ver minhas opcoes"
+  desabilitado sem catalogo.
+- `api.js`: `VITE_API_BASE` + mensagem unica se fetch/404 falhar. `.env.example` no frontend.
+- Deploy do Spring Boot permanece pendente.
+
 ---
 
 ## 12. Próximo passo sugerido (indicador)
 
-Com base no estado atual, o próximo passo natural é a resolução das pendências da seção 2
-(limpeza de pastas vazias e versionamento do código no git) ou a próxima feature que o usuário
-solicitar — sempre validando o modelo/ENUMs/FKs da seção 6 antes de implementar.
+Publicar o Spring Boot em um host Java (Render, Railway, Fly ou Cloud Run), definir
+`VITE_API_BASE` no build da Vercel, e marcar a spec
+`docs/specs/2026-09-20-vercel-wizard-objetivo-sem-catalogo.md`.
