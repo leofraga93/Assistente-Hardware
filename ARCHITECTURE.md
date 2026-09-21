@@ -39,7 +39,7 @@ de configuração (`POST /api/configuracao/validar`) e fallback GPU-first implem
 - [x] Esteira `POST /api/configuracao/validar` (socket, tipo RAM, slots, fonte) + margem 50W
 - [x] Fallback de orcamento reduz GPU primeiro preservando CPU/RAM
 - [ ] Definir/limpar pastas vazias: `frontend/src/data/` e `scripts/` (decidir uso ou solicitar remoção)
-- [ ] Versionar `backend/` e `frontend/` no git (hoje o repo tem só `.gitignore` commitado)
+- [x] Versionar `backend/` e `frontend/` no git
 - [ ] (Opcional) Avaliar upgrade `@fortawesome/react-fontawesome` 0.2.x → 3.1.1
       (0.2.x emite aviso de depreciação no install; validar API antes)
 
@@ -415,7 +415,16 @@ mantiveram-se `&middot;` / `\u00B7` / `\u2014` como separadores de texto (não s
   valido → 200 e invalidos → 400 com as mensagens esperadas; `POST /api/recomendacoes` segue OK.
 - Nenhuma mudança de frontend nesta sessão; servidores dev/preview seguem ativos (backend reiniciado).
 
-### Sessão 4+
+### Sessão 4 — README do projeto (2026-09-20)
+
+- Substituído o README mínimo por uma documentação em português com objetivo,
+  funcionalidades, tecnologias, estrutura, pré-requisitos, execução local,
+  testes, build, endpoints e regras de compatibilidade.
+- Mantidos os domínios, ENUMs, relacionamentos e invariantes já definidos;
+  nenhuma alteração de código ou de modelo de dados foi necessária.
+- Estado final: documentação pronta para integração na branch `main`.
+
+### Sessão 5+
 
 - (Adicionar entradas a cada nova interacao: o que foi pedido, o que foi feito, validacoes, estado final.)
 
@@ -423,6 +432,6 @@ mantiveram-se `&middot;` / `\u00B7` / `\u2014` como separadores de texto (não s
 
 ## 12. Próximo passo sugerido (indicador)
 
-Com base no estado atual, o próximo passo natural é a resolução das pendências da seção 2
-(limpeza de pastas vazias e versionamento do código no git) ou a próxima feature que o usuário
-solicitar — sempre validando o modelo/ENUMs/FKs da seção 6 antes de implementar.
+Com base no estado atual, o próximo passo natural é a limpeza das pastas vazias
+(`frontend/src/data/` e `scripts/`) ou a próxima feature que o usuário solicitar —
+sempre validando o modelo/ENUMs/FKs da seção 6 antes de implementar.
