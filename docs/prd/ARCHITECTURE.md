@@ -2,10 +2,9 @@
 
 > Mapa e checklist do **Hardware Assistant** (assistente de montagem de PC).
 > Caminho: `docs/prd/ARCHITECTURE.md`. Regras globais de agente ficam em `AGENTS.md` na raiz.
-> Specs de implementação: `docs/specs/`. Cada spec deve apontar um item deste checklist;
-> ao entregar, marcar o item como concluído.
-> Lido no início de cada sessão e **atualizado ao final** de qualquer interação que altere
-> código, fluxo, modelo de dados, docs ou decisão de arquitetura.
+> O fluxo dos documentos e o ponto de retomada ficam em `docs/prd/GUIA_CONTINUIDADE.md`.
+> Cada iniciativa deve ter seu PRD em `docs/prd/`; as specs existentes em `docs/specs/` são
+> preservadas e descrevem o que implementar. Consulte neste arquivo somente as seções pertinentes.
 
 ---
 
@@ -21,8 +20,9 @@ novo endpoint), a IA DEVE validar que a estrutura proposta:
    ou atualizar este documento antes de implementar;
 5. Em caso de mudança estrutural (novo ENUM, novo campo, novo relacionamento, novo fluxo),
    este documento deve ser atualizado na mesma entrega;
-6. Existe spec em `docs/specs/` ligada a um item das seções 2 ou 3; implementação sem spec
-   não entra. Entrega marca o item do checklist e o status da spec.
+6. A iniciativa tem PRD em `docs/prd/` com checklist e spec aplicável em `docs/specs/`;
+   implementação sem escopo registrado não entra. Na entrega, atualizar o estado e checklist
+   do PRD. Specs existentes são preservadas; o PRD é a fonte do andamento.
 
 Nenhuma implementação pode introduzir valor de enum fora da lista canônica nem relacionamento
 sem declarar as chaves aqui.
@@ -50,6 +50,11 @@ explica a falha da API (nao mais passo Objetivo em branco). Falta publicar o Spr
 - [x] Código `workspace/backend/` e `workspace/frontend/` versionados no git
 - [x] Wizard mostra erro amigavel se GET /api/catalogo falhar
       (spec `docs/specs/2026-09-20-wizard-erro-amigavel-catalogo.md`)
+- [x] Governança documental PRD → spec → entrega + guia de continuidade
+      (`docs/prd/2026-09-29-governanca-documental.md`)
+- [x] Ordem de execução e dependências das specs registradas
+      (`docs/prd/2026-09-29-ordem-execucao-specs.md`)
+- [ ] Vincular as specs legadas ainda sem PRD de iniciativa, sem alterar os arquivos de spec
 - [ ] Publicar API `/api/catalogo` em host Java (Render, Railway, Fly, Cloud Run ou similar)
       e apontar o front com `VITE_API_BASE`
       (spec `docs/specs/2026-09-20-vercel-wizard-objetivo-sem-catalogo.md`)
@@ -63,25 +68,27 @@ explica a falha da API (nao mais passo Objetivo em branco). Falta publicar o Spr
 
 Estado de cada módulo e onde ele vive.
 
-| Módulo | Onde | Estado |
-|---|---|---|
-| Catálogo de produtos/jogos/receitas (seed) | `backend/.../bootstrap/DataSeeder.java` | Entregue |
-| Endpoint `GET /api/catalogo` | `web/AssistenteController` | Entregue |
-| Recomendação única `POST /api/recomendacoes` | `service/MontagemService#recomendar` | Entregue |
-| Recomendações por marca `POST /api/receitas/recomendadas` | `MontagemService#recomendarPorMarca` | Entregue |
-| Substituição `POST /api/montagens/substitutas` | `MontagemService#substitutos` | Entregue |
-| Validação `POST /api/configuracao/validar` | `service/ValidacaoConfiguracaoService` + regras `Validacao*` | Entregue |
-| Tratamento de erros (`{mensagem}` + HTTP) | `AssistenteController` | Entregue |
-| Testes de integração (12) | `backend/src/test/.../RecomendacaoIntegrationTest.java` | Entregue |
-| Fluxo wizard 4 passos | `frontend/src/App.jsx` + componentes em `components/` | Entregue |
-| Tela de opções (AMD/Intel) | `components/OpcoesReceitas.jsx` | Entregue |
-| Configurador + modal de substituição | `components/Configurator.jsx`, `SubstitutionModal.jsx` | Entregue |
-| Ícones (sem lucide/emoji) | Todos os `.jsx` — ver mapa na seção 10 | Entregue |
-| Proxy dev `/api` → `:8080` e preview | `frontend/vite.config.js` | Entregue (só local) |
-| Deploy Vercel do frontend | `vercel.json` | Entregue (estático) |
-| Erro amigável se catálogo falhar | `CatalogoStatus.jsx` + `App.jsx` | Entregue |
-| `VITE_API_BASE` | `frontend/src/api.js` | Entregue (vazio = mesma origem) |
-| API em produção (host Java) | Render / Railway / Fly / Cloud Run + env Vercel | Pendente |
+| Módulo                                                    | Onde                                                         | Estado                                                                                      |
+| --------------------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------- |
+| Catálogo de produtos/jogos/receitas (seed)                | `backend/.../bootstrap/DataSeeder.java`                      | Entregue                                                                                    |
+| Endpoint `GET /api/catalogo`                              | `web/AssistenteController`                                   | Entregue                                                                                    |
+| Recomendação única `POST /api/recomendacoes`              | `service/MontagemService#recomendar`                         | Entregue                                                                                    |
+| Recomendações por marca `POST /api/receitas/recomendadas` | `MontagemService#recomendarPorMarca`                         | Entregue                                                                                    |
+| Substituição `POST /api/montagens/substitutas`            | `MontagemService#substitutos`                                | Entregue                                                                                    |
+| Validação `POST /api/configuracao/validar`                | `service/ValidacaoConfiguracaoService` + regras `Validacao*` | Entregue                                                                                    |
+| Tratamento de erros (`{mensagem}` + HTTP)                 | `AssistenteController`                                       | Entregue                                                                                    |
+| Testes de integração (12)                                 | `backend/src/test/.../RecomendacaoIntegrationTest.java`      | Entregue                                                                                    |
+| Fluxo wizard 4 passos                                     | `frontend/src/App.jsx` + componentes em `components/`        | Entregue                                                                                    |
+| Tela de opções (AMD/Intel)                                | `components/OpcoesReceitas.jsx`                              | Entregue                                                                                    |
+| Configurador + modal de substituição                      | `components/Configurator.jsx`, `SubstitutionModal.jsx`       | Entregue                                                                                    |
+| Ícones (sem lucide/emoji)                                 | Todos os `.jsx` — ver mapa na seção 10                       | Entregue                                                                                    |
+| Proxy dev `/api` → `:8080` e preview                      | `frontend/vite.config.js`                                    | Entregue (só local)                                                                         |
+| Deploy Vercel do frontend                                 | `vercel.json` (raiz do repositório)                          | Entregue (estático; install/build em `workspace/frontend`, saída `workspace/frontend/dist`) |
+| Erro amigável se catálogo falhar                          | `CatalogoStatus.jsx` + `App.jsx`                             | Entregue                                                                                    |
+| `VITE_API_BASE`                                           | `frontend/src/api.js`                                        | Entregue (vazio = mesma origem)                                                             |
+| API em produção (host Java)                               | Render / Railway / Fly / Cloud Run + env Vercel              | Pendente                                                                                    |
+| Governança documental e continuidade                      | `AGENTS.md`, `docs/prd/` e `docs/specs/`                     | Entregue; triagem das specs legadas pendente                                                |
+| Ordem de execução das specs                               | `docs/prd/2026-09-29-ordem-execucao-specs.md`                | Registrada; features pendentes                                                              |
 
 Componentes legados sem importação ativa (mantidos migrados, candidatos a remoção sob aprovação):
 `ReceitasSection.jsx`, `Resultado.jsx`, `StepJogos.jsx`, `StepMarca.jsx`, `BudgetStep.jsx`/`StepOrcamento.jsx`
@@ -92,7 +99,8 @@ Componentes legados sem importação ativa (mantidos migrados, candidatos a remo
 ## 4. Repositório e convenções
 
 - Raiz do git: repositório `Assistente-Hardware`. Código em `workspace/backend/` e
-  `workspace/frontend/`. Docs: `AGENTS.md` (raiz), `docs/prd/ARCHITECTURE.md`, `docs/specs/`.
+  `workspace/frontend/`. Docs: `AGENTS.md` (contrato estável), PRDs por iniciativa em `docs/prd/`
+  (arquitetura em `ARCHITECTURE.md`, fluxo em `GUIA_CONTINUIDADE.md`) e specs em `docs/specs/`.
 - Idiomas: código/UI em português sem acentos na maior parte (`components/` e backend),
   com exceções pontuais preservadas (ex.: subtítulo do `Header` usa acento). Não "corrigir" textos sem pedido.
 - Backend: Java 17, Spring Boot 3.3.5, Maven, Lombok, Spring Data JPA.
@@ -173,6 +181,12 @@ ou HTTP 400 `{mensagem}`. Regra de monitor/`isMonitor` não participa da cadeia 
 
 - Frontend dev: `:5173` (host true) com proxy `/api` → `http://localhost:8080` (sem CORS).
 - Backend: `:8080`.
+- Vercel: manter **Root Directory** na raiz do repositório; `vercel.json` define
+  `installCommand` como `npm install --prefix workspace/frontend`, `buildCommand` como
+  `npm run build --prefix workspace/frontend` e `outputDirectory` como
+  `workspace/frontend/dist`. Se aparecer `vite: command not found`, conferir se as dependências
+  foram instaladas no frontend (`npm install` dentro de `workspace/frontend`) e se a configuração
+  do projeto Vercel não está apontando para outra raiz.
 - Vercel (`https://assistente-hardware.vercel.app`): só o React. Sem Java, `/api/catalogo` = 404.
   O wizard mostra `CatalogoStatus` (erro amigável + tentar novamente).
 - Produção do front: `VITE_API_BASE` (build-time) aponta para a URL pública do Spring Boot,
@@ -189,16 +203,16 @@ ou HTTP 400 `{mensagem}`. Regra de monitor/`isMonitor` não participa da cadeia 
 
 `TipoComponente` — coluna `produtos.categoria` (máx 20 chars):
 
-| Valor | Rótulo (backend/frontend) |
-|---|---|
-| `CPU` | Processador |
-| `GPU` | Placa de video |
-| `RAM` | Memoria RAM |
-| `PLACA_MAE` | Placa-mae |
-| `FONTE` | Fonte de alimentacao |
-| `GABINETE` | Gabinete |
-| `ARMAZENAMENTO` | Armazenamento |
-| `PERIFERICO` | Periferico |
+| Valor           | Rótulo (backend/frontend) |
+| --------------- | ------------------------- |
+| `CPU`           | Processador               |
+| `GPU`           | Placa de video            |
+| `RAM`           | Memoria RAM               |
+| `PLACA_MAE`     | Placa-mae                 |
+| `FONTE`         | Fonte de alimentacao      |
+| `GABINETE`      | Gabinete                  |
+| `ARMAZENAMENTO` | Armazenamento             |
+| `PERIFERICO`    | Periferico                |
 
 `ArquiteturaPlataforma` — coluna `produtos.plataforma`:
 `AMD_AM4`, `AMD_AM5`, `INTEL_LGA1700`, `INTEL_LGA1851`.
@@ -288,13 +302,13 @@ Qualquer feature DEVE preservar:
 
 Todas as respostas de erro usam corpo `{"mensagem": "..."}`.
 
-| Método/rota | Payload | Resposta |
-|---|---|---|
-| `GET /api/catalogo` | — | `{produtos:[ProdutoDTO], jogos:[JogoDTO], receitas:[ReceitaDTO]}` |
-| `POST /api/recomendacoes` | `RecomendacaoRequest` | `RecomendacaoResponse` única (melhor entre AMD e Intel) |
-| `POST /api/receitas/recomendadas` | `RecomendacaoRequest` | `[RecomendacaoResponse]` — até 2 (AMD e Intel) |
-| `POST /api/montagens/substitutas` | `SubstituicaoRequest` | `{substitutos:[ProdutoDTO]}` |
-| `POST /api/configuracao/validar` | `ConfiguracaoValidacaoRequest` | 200 `{valida, problemas[]}` ou 400 `{mensagem}` |
+| Método/rota                       | Payload                        | Resposta                                                          |
+| --------------------------------- | ------------------------------ | ----------------------------------------------------------------- |
+| `GET /api/catalogo`               | —                              | `{produtos:[ProdutoDTO], jogos:[JogoDTO], receitas:[ReceitaDTO]}` |
+| `POST /api/recomendacoes`         | `RecomendacaoRequest`          | `RecomendacaoResponse` única (melhor entre AMD e Intel)           |
+| `POST /api/receitas/recomendadas` | `RecomendacaoRequest`          | `[RecomendacaoResponse]` — até 2 (AMD e Intel)                    |
+| `POST /api/montagens/substitutas` | `SubstituicaoRequest`          | `{substitutos:[ProdutoDTO]}`                                      |
+| `POST /api/configuracao/validar`  | `ConfiguracaoValidacaoRequest` | 200 `{valida, problemas[]}` ou 400 `{mensagem}`                   |
 
 `RecomendacaoRequest`: `orcamento` (BigDecimal, obrigatorio, >=300), `jogoIds` (lista Long),
 `marca` (string opcional), `incluiPerifericos` (bool).
@@ -308,6 +322,7 @@ Todas as respostas de erro usam corpo `{"mensagem": "..."}`.
 Erro (400) segue o padrão `{"mensagem": ...}` acumulando as violações da cadeia da seção 5.4.
 
 Campos auxiliares do frontend:
+
 - `CATEGORIA_LABEL` (frontend `src/labels.js`) espelha o rótulo por categoria da seção 6.1;
 - `destaque` nos itens de resposta usa esse rótulo (o front recria `destaque` ao substituir peça).
 
@@ -350,51 +365,55 @@ quando a API estiver publicada (hoje 404).
 
 Pacotes instalados: `@fortawesome/fontawesome-svg-core`, `@fortawesome/free-solid-svg-icons`,
 `@fortawesome/react-fontawesome`. Uso: `import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'`
-+ `import { faX } from '@fortawesome/free-solid-svg-icons'`; render `<FontAwesomeIcon icon={faX} className="h-* w-* ..." />`.
-Tamanho SEMPRE por classe Tailwind (sem CSS webfont); cor por `currentColor`/`text-*`.
+
+- `import { faX } from '@fortawesome/free-solid-svg-icons'`; render `<FontAwesomeIcon icon={faX} className="h-* w-* ..." />`.
+  Tamanho SEMPRE por classe Tailwind (sem CSS webfont); cor por `currentColor`/`text-*`.
 
 Mapeamento canônico por categoria (`CategoriaIcon.jsx` — validar aqui antes de trocar):
 
-| Categoria/contexto | Ícone |
-|---|---|
-| CPU / processador | `faMicrochip` |
-| GPU / placa de video | `faVideo` |
-| RAM / memoria | `faMemory` |
-| PLACA_MAE | `faServer` |
-| FONTE | `faBolt` |
-| GABINETE | `faBox` |
-| ARMAZENAMENTO | `faHardDrive` |
-| PERIFERICO (geral) | `faKeyboard` |
-| PERIFERICO c/ nome iniciando em "Monitor" | `faDisplay` |
-| Categoria desconhecida | `faCircleQuestion` |
+| Categoria/contexto                        | Ícone              |
+| ----------------------------------------- | ------------------ |
+| CPU / processador                         | `faMicrochip`      |
+| GPU / placa de video                      | `faVideo`          |
+| RAM / memoria                             | `faMemory`         |
+| PLACA_MAE                                 | `faServer`         |
+| FONTE                                     | `faBolt`           |
+| GABINETE                                  | `faBox`            |
+| ARMAZENAMENTO                             | `faHardDrive`      |
+| PERIFERICO (geral)                        | `faKeyboard`       |
+| PERIFERICO c/ nome iniciando em "Monitor" | `faDisplay`        |
+| Categoria desconhecida                    | `faCircleQuestion` |
 
 Mapa usado na migração (lucide → Font Awesome free-solid), p/ referência:
 
-| lucide | FA | | lucide | FA |
-|---|---|---|---|---|
-| ArrowLeft / ArrowRight | faArrowLeft / faArrowRight | | Cpu | faMicrochip |
-| Loader2 | faSpinner + `animate-spin` | | Gauge | faGaugeHigh |
-| MonitorSmartphone | faDesktop | | CheckCircle2 | faCircleCheck |
-| PcCase | faComputer | | BadgeCheck | faShieldHalved |
-| MonitorPlay | faVideo | | RefreshCcw / RotateCcw | faRotateLeft |
-| MemoryStick | faMemory | | X | faXmark |
-| CircuitBoard | faServer | | ExternalLink | faArrowUpRightFromSquare |
-| Zap | faBolt | | HelpCircle | faCircleQuestion |
-| Box | faBox | | Monitor | faDisplay |
-| HardDrive | faHardDrive | | Sparkles | faWandMagicSparkles |
-| Keyboard | faKeyboard | | AlertTriangle | faTriangleExclamation |
-| Gamepad2 | faGamepad | | Award | faAward |
-| Target | faBullseye | | BookOpen | faBookOpen |
-| Wallet | faWallet | | Briefcase | faBriefcase |
-| Check | faCheck | | LayoutGrid | faTableCellsLarge |
-| Wrench | faWrench | | Clapperboard | faClapperboard |
+| lucide                 | FA                         |     | lucide                 | FA                       |
+| ---------------------- | -------------------------- | --- | ---------------------- | ------------------------ |
+| ArrowLeft / ArrowRight | faArrowLeft / faArrowRight |     | Cpu                    | faMicrochip              |
+| Loader2                | faSpinner + `animate-spin` |     | Gauge                  | faGaugeHigh              |
+| MonitorSmartphone      | faDesktop                  |     | CheckCircle2           | faCircleCheck            |
+| PcCase                 | faComputer                 |     | BadgeCheck             | faShieldHalved           |
+| MonitorPlay            | faVideo                    |     | RefreshCcw / RotateCcw | faRotateLeft             |
+| MemoryStick            | faMemory                   |     | X                      | faXmark                  |
+| CircuitBoard           | faServer                   |     | ExternalLink           | faArrowUpRightFromSquare |
+| Zap                    | faBolt                     |     | HelpCircle             | faCircleQuestion         |
+| Box                    | faBox                      |     | Monitor                | faDisplay                |
+| HardDrive              | faHardDrive                |     | Sparkles               | faWandMagicSparkles      |
+| Keyboard               | faKeyboard                 |     | AlertTriangle          | faTriangleExclamation    |
+| Gamepad2               | faGamepad                  |     | Award                  | faAward                  |
+| Target                 | faBullseye                 |     | BookOpen               | faBookOpen               |
+| Wallet                 | faWallet                   |     | Briefcase              | faBriefcase              |
+| Check                  | faCheck                    |     | LayoutGrid             | faTableCellsLarge        |
+| Wrench                 | faWrench                   |     | Clapperboard           | faClapperboard           |
 
 Regras: `faSpinner` anima com Tailwind `animate-spin` (não usar `spin` do FA, pois não há CSS FA importado);
 mantiveram-se `&middot;` / `\u00B7` / `\u2014` como separadores de texto (não são ícones).
 
 ---
 
-## 11. Histórico de interações (log vivo — atualizar a cada sessão)
+## 11. Histórico legado
+
+O histórico abaixo é referência das sessões anteriores. Novas iniciativas registram planejamento,
+andamento, arquivos e validações no PRD próprio, conforme `docs/prd/GUIA_CONTINUIDADE.md`.
 
 ### Sessão 1 — Migração de ícones lucide → Font Awesome (2026-09-03)
 
@@ -463,10 +482,43 @@ mantiveram-se `&middot;` / `\u00B7` / `\u2014` como separadores de texto (não s
 - `api.js`: `VITE_API_BASE` + mensagem unica se fetch/404 falhar. `.env.example` no frontend.
 - Deploy do Spring Boot permanece pendente.
 
+### Sessão 7 — Ajuste da instalação/build no Vercel (2026-09-29)
+
+- Diagnóstico: `sh: line 1: vite: command not found` ocorria porque o frontend vive em
+  `workspace/frontend`, enquanto o build do Vercel era executado sem instalar dependências nessa
+  pasta.
+- `vercel.json` na raiz do repositório configura `npm install --prefix workspace/frontend`,
+  `npm run build --prefix workspace/frontend` e publica `workspace/frontend/dist`; manter o
+  Root Directory da Vercel na raiz do repositório.
+- A dependência `@fortawesome/react-fontawesome` estava declarada no `package.json`, mas ausente
+  localmente; `npm install` em `workspace/frontend` instalou as dependências.
+- Validação: `npm run build --prefix workspace/frontend` passou (54 módulos transformados).
+- Esta configuração publica apenas o frontend estático; publicar o Spring Boot e configurar
+  `VITE_API_BASE` continuam pendentes conforme a spec de catálogo na Vercel.
+
+### Sessão 8 — Governança documental e continuidade (2026-09-29)
+
+- `AGENTS.md` consolidado como contrato estável; mudanças futuras nele exigem decisão explícita.
+- PRDs em `docs/prd/` passam a controlar escopo, estado, checklist e registro das entregas;
+  specs existentes permanecem sem alterações.
+- Criados `docs/prd/GUIA_CONTINUIDADE.md` (dicionário e ponto de retomada) e
+  `docs/prd/2026-09-29-governanca-documental.md` (PRD desta iniciativa).
+- Próximo passo: vincular as specs legadas sem PRD próprio; depois retomar a publicação da API Java.
+
+### Sessão 9 — Ordem de execução das specs (2026-09-29)
+
+- Inventariadas 14 specs existentes; nenhuma spec foi modificada.
+- Registrada sequência por dependência em `docs/prd/2026-09-29-ordem-execucao-specs.md`, com
+  etapas para API em produção, fundação visual, landing, afiliados/autenticação e painel admin.
+- Riscos prévios destacados: H2 volátil para CRUD de produção, campos do produto ausentes do modelo,
+  modelo de métricas de clique, credencial/segredo JWT e ativos/conteúdo externos.
+- Próximo passo sugerido: confirmar host e persistência do backend e abrir o PRD da Etapa 1; depois
+  executar as features conforme o roteiro, mantendo PRD próprio para cada feature.
+
 ---
 
 ## 12. Próximo passo sugerido (indicador)
 
-Publicar o Spring Boot em um host Java (Render, Railway, Fly ou Cloud Run), definir
-`VITE_API_BASE` no build da Vercel, e marcar a spec
-`docs/specs/2026-09-20-vercel-wizard-objetivo-sem-catalogo.md`.
+Seguir `docs/prd/2026-09-29-ordem-execucao-specs.md`. Primeiro confirmar host/persistência e criar
+um PRD de iniciativa para publicar o Spring Boot, definir `VITE_API_BASE` no build da Vercel e
+acompanhar `docs/specs/2026-09-20-vercel-wizard-objetivo-sem-catalogo.md`.
