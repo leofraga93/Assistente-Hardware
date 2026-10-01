@@ -58,6 +58,8 @@ explica a falha da API (nao mais passo Objetivo em branco). Falta publicar o Spr
 - [ ] Publicar API `/api/catalogo` em host Java (Render, Railway, Fly, Cloud Run ou similar)
       e apontar o front com `VITE_API_BASE`
       (spec `docs/specs/2026-09-20-vercel-wizard-objetivo-sem-catalogo.md`)
+- [x] Preparar Spring para porta dinâmica Railway (`PORT`, fallback `8080`); smoke local completo
+      (`docs/prd/2026-09-30-preparacao-backend-railway.md`)
 - [ ] Definir/limpar pastas vazias: `frontend/src/data/` e `scripts/` (decidir uso ou solicitar remoção)
 - [ ] (Opcional) Avaliar upgrade `@fortawesome/react-fontawesome` 0.2.x → 3.1.1
       (0.2.x emite aviso de depreciação no install; validar API antes)
@@ -188,6 +190,10 @@ ou HTTP 400 `{mensagem}`. Regra de monitor/`isMonitor` não participa da cadeia 
   `workspace/frontend/dist`. Se aparecer `vite: command not found`, conferir se as dependências
   foram instaladas no frontend (`npm install` dentro de `workspace/frontend`) e se a configuração
   do projeto Vercel não está apontando para outra raiz.
+- Backend Railway: código em `workspace/backend`; configurar Root Directory nesse caminho e o
+  Spring usa a variável `PORT` com fallback local `8080`. A preparação e validação local estão em
+  `docs/prd/2026-09-30-preparacao-backend-railway.md`; falta publicar o serviço e configurar
+  `VITE_API_BASE` no projeto Vercel para validar as rotas remotas.
 - Vercel (`https://assistente-hardware.vercel.app`): só o React. Sem Java, `/api/catalogo` = 404.
   O wizard mostra `CatalogoStatus` (erro amigável + tentar novamente).
 - Produção do front: `VITE_API_BASE` (build-time) aponta para a URL pública do Spring Boot,

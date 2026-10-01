@@ -36,11 +36,55 @@ trabalho pendente e decisões que precisam ser resolvidas antes de codificar.
 ### Etapa 1 — Desbloquear o catálogo em produção
 
 1. `docs/specs/2026-09-20-vercel-wizard-objetivo-sem-catalogo.md`
-   - Resolver host Java e fazer `GET /api/catalogo` retornar 200 pela Vercel; configurar
-     `VITE_API_BASE` e testar todas as rotas públicas usadas pelo wizard.
-   - Dependência externa: decisão/acesso ao host de backend e configuração de ambiente.
-   - Observação: a persistência atual é H2 em memória; serve para catálogo seedado de demonstração,
-     mas não para dados administrativos duráveis. Definir banco persistente antes de CRUD admin.
+   - **Host recomendado: Railway** para este MVP Java/Spring, principalmente pela tentativa já
+     iniciada e pelo fluxo documentado de deploy Spring Boot. Configurar Root Directory do serviço
+     como `workspace/backend` (ou comandos de build/start equivalentes), publicar o serviço e
+     validar `GET /api/catalogo` diretamente no domínio público Railway.
+   - O Railway injeta `PORT`; Spring está preparado para escutá-la usando `${PORT:8080}` e manter
+     8080 como padrão local (implementação registrada em
+     `docs/prd/2026-09-30-preparacao-backend-railway.md`).
+   - Na Vercel, definir `VITE_API_BASE` com a URL pública HTTPS completa da API, sem barra final;
+     é variável de build, portanto salvar/alterar exige novo deploy frontend. Manter chamadas
+     browser → API Spring (`/api/catalogo`, `/api/receitas/recomendadas`,
+     `/api/montagens/substitutas`) → repository → banco. Nunca conectar o browser diretamente ao
+     Postgres nem expor credenciais de banco no frontend.
+   - Para o critério atual de catálogo seedado e leitura/recomendação, H2 em memória basta para
+     provar o deploy: o `DataSeeder` recria catálogo ao iniciar. Isso não preserva alterações
+     administrativas entre reinícios; usar Postgres gerenciado antes de implementar CRUD admin.
+   - CORS já permite `*` em `/api/**`. Para a API pública atual funciona, mas revisar e restringir
+     a origem à Vercel quando houver autenticação/rotas privadas.
+   - Aceite operacional: testar `/api/catalogo` na URL Railway e na URL Vercel; testar também os
+     dois POST públicos do wizard. Verificar resposta 2xx, corpo esperado, CORS e cold start.
+   - Comparação de hospedagem consultada em 2026-09-30 (preços mudam; estimar na conta/região
+     antes de escolher):
+     - Railway: melhor encaixe e menor atrito para este Spring Boot. Plano Free inclui US$ 1/mês
+       em uso e limites baixos; Hobby custa US$ 5/mês e inclui US$ 5 de créditos de uso. CPU,
+       memória, banco e tráfego podem ultrapassar o crédito; conferir uso real no painel.
+     - Render: simples para Java/Docker, mas Free dorme após 15 minutos sem tráfego e pode levar
+       cerca de um minuto para voltar; Postgres Free expira após 30 dias. Serve para experimento,
+       não como opção durável sempre disponível.
+     - Cloud Run: escala a zero e tem franquia mensal de requests/CPU/RAM, então pode ser barato
+       para tráfego baixo; Cloud SQL é cobrado à parte mesmo quando a API está ociosa e adiciona
+       configuração operacional. Alternativa se aceitar a complexidade GCP.
+     - Fly.io: tecnicamente possível, mas custo de VM/volume depende da região e configuração;
+       não há aqui uma vantagem de preço comprovada sobre Railway para este caso.
+     - Supabase/Neon: alternativas de Postgres, não substitutos diretos do serviço Spring Boot.
+       Supabase Free tem 500 MB e pausa projetos após uma semana inativos; bom para protótipo,
+       não para disponibilidade contínua. A aplicação Java continuaria hospedada separadamente.
+   - Opção sem CORS: configurar rewrite `/api/*` na Vercel apontando para o domínio Railway. Isso
+     só encaminha a chamada; não hospeda o Spring nem elimina a necessidade de uma API ativa.
+   - A solução mais barata para **catálogo estritamente estático** seria um JSON público no build
+     do frontend, mas não substituiria os endpoints POST de recomendação/substituição e duplicaria
+     a fonte do catálogo. Não recomendada como correção principal.
+
+   Fontes oficiais consultadas em 2026-09-30: [Railway pricing](https://railway.com/pricing),
+   [Railway Spring Boot](https://docs.railway.com/guides/spring-boot),
+   [Railway PostgreSQL](https://docs.railway.com/databases/postgresql),
+   [Railway PORT/healthchecks](https://docs.railway.com/deployments/healthchecks),
+   [Render pricing](https://render.com/pricing), [Render free limits](https://render.com/docs/free),
+   [Cloud Run pricing](https://cloud.google.com/run/pricing),
+   [Cloud SQL pricing](https://cloud.google.com/sql/pricing) e
+   [Supabase pricing](https://supabase.com/pricing).
 
 ### Etapa 2 — Fundação visual
 
