@@ -32,8 +32,9 @@ workspace/
 └── frontend/    # Aplicação React e fluxo do configurador
 ```
 
-`ARCHITECTURE.md` contém o modelo de dados canônico, os domínios aceitos, as
-regras de integridade e o contrato detalhado da API.
+[A arquitetura do projeto](docs/prd/ARCHITECTURE.md) contém o modelo de dados
+canônico, os domínios aceitos, as regras de integridade e o contrato detalhado
+da API.
 
 ## Pré-requisitos
 

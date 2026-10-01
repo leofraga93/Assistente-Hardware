@@ -6,6 +6,7 @@ import {
   faTableCellsLarge,
   faCheck,
 } from '@fortawesome/free-solid-svg-icons'
+import CatalogoStatus from './CatalogoStatus'
 
 const icones = {
   Estudos: faBookOpen,
@@ -21,7 +22,13 @@ const dicas = {
   Escritorio: 'Navegador, e-mail e documentos.',
 }
 
-export default function ObjectiveStep({ objetivos, selecionados, onToggle }) {
+export default function ObjectiveStep({
+  objetivos,
+  selecionados,
+  onToggle,
+  statusCatalogo,
+  onTentarCatalogo,
+}) {
   const lista = objetivos || []
   return (
     <div className="space-y-6">
@@ -32,6 +39,7 @@ export default function ObjectiveStep({ objetivos, selecionados, onToggle }) {
         </p>
       </div>
 
+      <CatalogoStatus status={statusCatalogo} onTentar={onTentarCatalogo}>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         {lista.map((o) => {
           const ativo = selecionados.includes(o.id)
@@ -65,6 +73,7 @@ export default function ObjectiveStep({ objetivos, selecionados, onToggle }) {
           )
         })}
       </div>
+      </CatalogoStatus>
     </div>
   )
 }

@@ -1,29 +1,30 @@
-# AGENTS.md — Instruções para agentes de IA
+# AGENTS.md — Contrato estável do projeto
 
-Leia este arquivo no início de cada sessão.
+Este arquivo é o contrato permanente para agentes. Não o altere durante tarefas comuns;
+mudanças exigem decisão explícita do usuário. Mantenha-o curto para reutilização entre sessões.
 
-## Contexto obrigatório
+## Regras de negócio e arquitetura
 
-- Antes de qualquer tarefa, leia `ARCHITECTURE.md` na raiz do repositório. Ele contém:
-  - a regra de ouro e o mandato de validação de ENUMs e chaves estrangeiras;
-  - o estado atual do projeto, o checklist de escopo e o histórico de interações;
-  - o modelo de dados canônico (ENUMs, domínios, tabelas, relacionamentos) e as invariantes.
-- **Atualize `ARCHITECTURE.md` ao final de cada interação** (seção "Histórico de interações",
-  posição atual e checklist) para que sirva de contexto persistente e indicador de próximo passo.
+- Não inventar ENUMs, domínios, relacionamentos, chaves estrangeiras ou invariantes. A fonte
+  canônica e detalhada é `docs/prd/ARCHITECTURE.md`.
+- Preservar compatibilidade de plataforma CPU/placa-mãe, tipo e slots de RAM, potência da fonte,
+  orçamento e demais invariantes definidos no PRD.
+- Frontend: React + Vite + Tailwind. Ícones exclusivamente Font Awesome via SVG core e
+  `FontAwesomeIcon`; nunca usar emoji como ícone ou conteúdo.
+- Backend: Java 17 + Spring Boot. O deploy Vercel é apenas do frontend; a API exige host próprio.
+- Não adicionar comentários de código sem necessidade. Manter o idioma e estilo já usados na
+  área modificada. Não commitar sem pedido explícito.
 
-## Validação obrigatória antes de implementar
+## Governança da documentação
 
-Ao propor qualquer implementação, valide a estrutura contra:
-1. Os ENUMs e domínios declarados em `ARCHITECTURE.md` seção 6 (nenhum valor inventado);
-2. As chaves estrangeiras/relacionamentos declarados na seção 6;
-3. As regras de integridade de negócio da seção 7;
-4. O estado e o checklist das seções 2 a 5.
-
-Se a proposta divergir, ajuste a proposta ou atualize o documento antes de implementar.
-
-## Regras transversais do ambiente
-
-- Não usar emoji em respostas nem em arquivos.
-- Não comentar código sem necessidade.
-- Manter textos em português seguindo o padrão existente em cada parte do código.
-- Não commitar sem pedido explícito do usuário.
+- Para retomar contexto, leia `docs/prd/GUIA_CONTINUIDADE.md`; ele aponta o PRD e a spec exatos.
+- PRDs em `docs/prd/` são a fonte do escopo, estado, checklist e registro de entrega. Atualize o
+  PRD relacionado ao iniciar e concluir uma iniciativa.
+- Specs em `docs/specs/` descrevem o que implementar e seus critérios de aceite. Implemente
+  somente o escopo da spec vinculada ao PRD.
+- Specs existentes são preservadas: não editar, renomear nem reescrever durante a implementação.
+  Registrar progresso e conclusão no PRD. Criar spec apenas para iniciativa nova sem spec válida.
+- Antes de implementar, consulte apenas o PRD e a spec relacionados, além das seções canônicas
+  de arquitetura necessárias. Não releia toda a documentação sem necessidade.
+- Ao concluir, atualizar o checklist/estado do PRD, anotar arquivos e validações e deixar o
+  próximo passo claro no guia de continuidade quando houver trabalho em andamento.

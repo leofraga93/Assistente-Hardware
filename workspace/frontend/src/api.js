@@ -1,32 +1,45 @@
-const API_BASE = ''
+const API_BASE = String(import.meta.env.VITE_API_BASE || '').replace(/\/$/, '')
+
+const MSG_API_FORA =
+  'Nao foi possivel conectar a API. O catalogo (objetivos e jogos) vem do Spring Boot, que precisa estar no ar.'
 
 async function handle(res) {
   const data = await res.json().catch(() => ({}))
   if (!res.ok) {
-    throw new Error(data.mensagem || 'Erro ao se comunicar com o servidor.')
+    if (res.status === 404) {
+      throw new Error(MSG_API_FORA)
+    }
+    throw new Error(data.mensagem || MSG_API_FORA)
   }
   return data
 }
 
-export async function getCatalogo() {
-  const res = await fetch(`${API_BASE}/api/catalogo`)
+async function pedir(path, opcoes) {
+  let res
+  try {
+    res = await fetch(`${API_BASE}${path}`, opcoes)
+  } catch {
+    throw new Error(MSG_API_FORA)
+  }
   return handle(res)
 }
 
+export async function getCatalogo() {
+  return pedir('/api/catalogo')
+}
+
 export async function receitasRecomendadas({ orcamento, jogoIds, incluiPerifericos }) {
-  const res = await fetch(`${API_BASE}/api/receitas/recomendadas`, {
+  return pedir('/api/receitas/recomendadas', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ orcamento, jogoIds, incluiPerifericos }),
   })
-  return handle(res)
 }
 
 export async function substitutos(produtoId, montagemIds) {
-  const res = await fetch(`${API_BASE}/api/montagens/substitutas`, {
+  return pedir('/api/montagens/substitutas', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ produtoId, montagemIds }),
   })
-  return handle(res)
 }

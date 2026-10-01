@@ -9,10 +9,12 @@ import GamesStep from './components/GamesStep'
 import BudgetStep from './components/BudgetStep'
 import OpcoesReceitas from './components/OpcoesReceitas'
 import Configurator from './components/Configurator'
+import CatalogoStatus from './components/CatalogoStatus'
 import { getCatalogo, receitasRecomendadas } from './api'
 
 export default function App() {
   const [catalogo, setCatalogo] = useState(null)
+  const [statusCatalogo, setStatusCatalogo] = useState('carregando')
   const [fase, setFase] = useState('wizard')
   const [passo, setPasso] = useState(1)
   const [incluiPerifericos, setIncluiPerifericos] = useState(false)
@@ -24,14 +26,26 @@ export default function App() {
   const [opcoes, setOpcoes] = useState([])
   const [build, setBuild] = useState(null)
 
-  useEffect(() => {
+  const carregarCatalogo = useCallback(() => {
+    setStatusCatalogo('carregando')
     getCatalogo()
-      .then(setCatalogo)
-      .catch(() => setCatalogo(null))
+      .then((dados) => {
+        setCatalogo(dados)
+        setStatusCatalogo('ok')
+      })
+      .catch(() => {
+        setCatalogo(null)
+        setStatusCatalogo('erro')
+      })
   }, [])
+
+  useEffect(() => {
+    carregarCatalogo()
+  }, [carregarCatalogo])
 
   const objetivos = (catalogo?.jogos || []).filter((j) => j.tipo === 'OBJETIVO')
   const jogosLista = (catalogo?.jogos || []).filter((j) => j.tipo === 'JOGO')
+  const catalogoIndisponivel = statusCatalogo !== 'ok'
 
   const toggle = useCallback((setter) => (id) => {
     setter((prev) => (prev.includes(id) ? prev.filter((j) => j !== id) : [...prev, id]))
@@ -105,6 +119,12 @@ export default function App() {
               <div className="card p-6 sm:p-8">
                 <PassoBar atual={passo} />
 
+                {passo !== 2 && passo !== 3 && statusCatalogo === 'erro' && (
+                  <div className="mb-6">
+                    <CatalogoStatus status="erro" onTentar={carregarCatalogo} />
+                  </div>
+                )}
+
                 <div className="min-h-[240px]">
                   {passo === 1 && (
                     <PeripheralsStep valor={incluiPerifericos} onChange={setIncluiPerifericos} />
@@ -114,6 +134,8 @@ export default function App() {
                       objetivos={objetivos}
                       selecionados={objetivosSel}
                       onToggle={toggle(setObjetivosSel)}
+                      statusCatalogo={statusCatalogo}
+                      onTentarCatalogo={carregarCatalogo}
                     />
                   )}
                   {passo === 3 && (
@@ -121,6 +143,8 @@ export default function App() {
                       jogos={jogosLista}
                       selecionados={jogosSel}
                       onToggle={toggle(setJogosSel)}
+                      statusCatalogo={statusCatalogo}
+                      onTentarCatalogo={carregarCatalogo}
                     />
                   )}
                   {passo === 4 && <BudgetStep valor={orcamento} onChange={setOrcamento} />}
@@ -150,7 +174,7 @@ export default function App() {
                   ) : (
                     <button
                       onClick={gerarOpcoes}
-                      disabled={carregando}
+                      disabled={carregando || catalogoIndisponivel}
                       className="btn-primary bg-gradient-to-r from-brand-600 to-cyan-600 hover:from-brand-500 hover:to-cyan-500"
                     >
                       {carregando ? (

@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck, faGamepad } from '@fortawesome/free-solid-svg-icons'
+import CatalogoStatus from './CatalogoStatus'
 
 const cores = {
   Roblox: 'from-red-500/40 to-orange-500/40',
@@ -19,15 +20,13 @@ function logo(jogo) {
   )
 }
 
-export default function GamesStep({ jogos, selecionados, onToggle }) {
-  if (!jogos || jogos.length === 0) {
-    return (
-      <p className="text-sm text-slate-400">
-        Carregando lista de jogos... Verifique a conexao com o servidor.
-      </p>
-    )
-  }
-
+export default function GamesStep({
+  jogos,
+  selecionados,
+  onToggle,
+  statusCatalogo,
+  onTentarCatalogo,
+}) {
   return (
     <div className="space-y-6">
       <div>
@@ -37,8 +36,9 @@ export default function GamesStep({ jogos, selecionados, onToggle }) {
         </p>
       </div>
 
+      <CatalogoStatus status={statusCatalogo} onTentar={onTentarCatalogo}>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        {jogos.map((jogo) => {
+        {(jogos || []).map((jogo) => {
           const ativo = selecionados.includes(jogo.id)
           return (
             <button
@@ -75,6 +75,7 @@ export default function GamesStep({ jogos, selecionados, onToggle }) {
           )
         })}
       </div>
+      </CatalogoStatus>
     </div>
   )
 }
