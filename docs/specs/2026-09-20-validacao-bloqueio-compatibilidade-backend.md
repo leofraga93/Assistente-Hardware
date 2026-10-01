@@ -63,5 +63,5 @@ Garantir em tempo real a integridade técnica do conjunto de hardware a cada tro
 ---
 
 ## 6. Validação PRD e Arquitetura
-- Validado contra `ARCHITECTURE.md` (Sessão 3).
+- Validado contra `docs/prd/ARCHITECTURE.md` (Sessão 3).
 - Cobertura de 12 testes de integração passando com sucesso no backend.

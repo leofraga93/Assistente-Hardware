@@ -29,7 +29,7 @@ registro curto que permita retomar o trabalho sem reler todo o histórico.
 - [x] O fluxo define PRD como dono do andamento/checklist e spec como contrato de implementação.
 - [x] O guia lista onde registrar cada informação e como retomar a sessão.
 - [x] As specs existentes foram mantidas sem edição.
-- [x] `ARCHITECTURE.md` registra a governança e o trabalho de triagem restante.
+- [x] `docs/prd/ARCHITECTURE.md` registra a governança e o trabalho de triagem restante.
 
 ## Entrega
 

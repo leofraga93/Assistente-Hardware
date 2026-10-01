@@ -48,4 +48,4 @@ Oferecer um rodapé institucional abrangente e estruturado (inspirado nos grande
 ---
 
 ## 6. Validação PRD e Arquitetura
-- Total alinhamento com as regras de conformidade e acessibilidade do `AGENTS.md` e `ARCHITECTURE.md`.
+- Total alinhamento com as regras de conformidade e acessibilidade do `AGENTS.md` e `docs/prd/ARCHITECTURE.md`.

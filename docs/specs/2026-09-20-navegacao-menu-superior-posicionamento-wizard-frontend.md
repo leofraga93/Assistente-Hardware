@@ -47,4 +47,4 @@ Eliminar redundâncias na barra de navegação superior e reorganizar a composi�
 ---
 
 ## 6. Validação PRD e Arquitetura
-- Validação contra as diretrizes do `AGENTS.md` e conformidade estrutural com o `ARCHITECTURE.md`.
+- Validação contra as diretrizes do `AGENTS.md` e conformidade estrutural com `docs/prd/ARCHITECTURE.md`.

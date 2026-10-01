@@ -100,7 +100,8 @@ Componentes legados sem importação ativa (mantidos migrados, candidatos a remo
 
 - Raiz do git: repositório `Assistente-Hardware`. Código em `workspace/backend/` e
   `workspace/frontend/`. Docs: `AGENTS.md` (contrato estável), PRDs por iniciativa em `docs/prd/`
-  (arquitetura em `ARCHITECTURE.md`, fluxo em `GUIA_CONTINUIDADE.md`) e specs em `docs/specs/`.
+  (arquitetura em `docs/prd/ARCHITECTURE.md`, fluxo em `docs/prd/GUIA_CONTINUIDADE.md`) e specs
+  em `docs/specs/`.
 - Idiomas: código/UI em português sem acentos na maior parte (`components/` e backend),
   com exceções pontuais preservadas (ex.: subtítulo do `Header` usa acento). Não "corrigir" textos sem pedido.
 - Backend: Java 17, Spring Boot 3.3.5, Maven, Lombok, Spring Data JPA.
@@ -433,7 +434,7 @@ andamento, arquivos e validações no PRD próprio, conforme `docs/prd/GUIA_CONT
 ### Sessão 2 — Documentacao de contexto/arquitetura (2026-09-03)
 
 - Levantado o modelo de dados real (ENUMs, colunas, FKs, invariantes) a partir do código.
-- Criados `ARCHITECTURE.md` (este arquivo) e `AGENTS.md` na raiz.
+- Criados `docs/prd/ARCHITECTURE.md` (este arquivo) e `AGENTS.md` na raiz.
 - Estabelecida a regra de ouro: implementacoes devem validar ENUMs/FKs/invariantes e atualizar este doc.
 
 ### Sessão 3 — Esteira de validação de configuração + fallback GPU-first (2026-09-04)
@@ -458,14 +459,19 @@ andamento, arquivos e validações no PRD próprio, conforme `docs/prd/GUIA_CONT
   valido → 200 e invalidos → 400 com as mensagens esperadas; `POST /api/recomendacoes` segue OK.
 - Nenhuma mudança de frontend nesta sessão; servidores dev/preview seguem ativos (backend reiniciado).
 
-### Sessão 4+
+### Sessão 4 — README do projeto (2026-09-20)
 
-- (Adicionar entradas a cada nova interacao: o que foi pedido, o que foi feito, validacoes, estado final.)
+- Substituído o README mínimo por uma documentação em português com objetivo,
+  funcionalidades, tecnologias, estrutura, pré-requisitos, execução local,
+  testes, build, endpoints e regras de compatibilidade.
+- Mantidos os domínios, ENUMs, relacionamentos e invariantes já definidos;
+  nenhuma alteração de código ou de modelo de dados foi necessária.
+- Estado final: a documentação foi incorporada à base do projeto.
 
 ### Sessão 5 — Docs spec-first + diagnóstico Vercel (2026-09-20)
 
 - `AGENTS.md` na raiz: regras globais (spec-first, ENUM/FK via PRD, zero emoji / só Font Awesome).
-- `ARCHITECTURE.md` movido para `docs/prd/ARCHITECTURE.md` (mapa e checklist).
+- O mapa e checklist de arquitetura passaram a ser mantidos em `docs/prd/ARCHITECTURE.md`.
 - Pasta `docs/specs/` criada. Specs desta sessão:
   - `2026-09-20-reorganizacao-docs-spec-first.md` (entregue, checklist marcado).
   - `2026-09-20-vercel-wizard-objetivo-sem-catalogo.md` (diagnosticada, correção pendente).

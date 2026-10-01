@@ -49,4 +49,4 @@ Definição das 5 tonalidades canônicas no Tailwind CSS e sua aplicação estru
 ---
 
 ## 6. Validação PRD e Arquitetura
-- Totalmente compatível com a configuração Tailwind CSS em `workspace/frontend/` e validado contra o PRD `ARCHITECTURE.md`.
+- Totalmente compatível com a configuração Tailwind CSS em `workspace/frontend/` e validado contra `docs/prd/ARCHITECTURE.md`.

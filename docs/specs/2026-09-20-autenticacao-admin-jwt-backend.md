@@ -57,4 +57,4 @@ Restringir e proteger o acesso aos endpoints administrativos de gestão do catá
 ---
 
 ## 6. Validação PRD e Arquitetura
-- Requer atualização prévia do PRD (`ARCHITECTURE.md`) incluindo as rotas de autenticação na Tabela de API da Seção 8 antes da codificação.
+- Requer atualização prévia do PRD (`docs/prd/ARCHITECTURE.md`) incluindo as rotas de autenticação na Tabela de API da Seção 8 antes da codificação.

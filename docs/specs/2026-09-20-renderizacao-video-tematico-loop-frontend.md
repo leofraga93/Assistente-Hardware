@@ -50,4 +50,4 @@ Inserir um vídeo de alta qualidade focado em componentes de hardware e montagem
 ---
 
 ## 6. Validação PRD e Arquitetura
-- Integra-se diretamente à reestruturação da Hero Section descrita na SPEC-08 e ao layout principal no `ARCHITECTURE.md`.
+- Integra-se diretamente à reestruturação da Hero Section descrita na SPEC-08 e ao layout principal em `docs/prd/ARCHITECTURE.md`.

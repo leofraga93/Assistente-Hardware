@@ -47,4 +47,4 @@ Anexar dinamicamente as tags e parâmetros de afiliados nos links de lojas parce
 
 ## 6. Validação PRD e Arquitetura
 - A coluna `link_afiliado TEXT NOT NULL` já está presente na tabela `produtos` (Seção 6.3 do PRD).
-- A rota `GET /api/redirect/{id}` deve ser formalmente inserida na Seção 8 de `ARCHITECTURE.md`.
+- A rota `GET /api/redirect/{id}` deve ser formalmente inserida na Seção 8 de `docs/prd/ARCHITECTURE.md`.

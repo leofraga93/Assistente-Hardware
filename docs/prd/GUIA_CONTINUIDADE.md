@@ -16,13 +16,13 @@ iniciativa nem a spec; aponta para eles e registra o estado da transição docum
 ## Fluxo de trabalho
 
 1. Leia `AGENTS.md` e este guia. Abra somente o PRD relacionado à solicitação e as seções
-   relevantes de `ARCHITECTURE.md`.
+   relevantes de `docs/prd/ARCHITECTURE.md`.
 2. Localize o PRD da iniciativa. Se não existir, crie-o em `docs/prd/` antes de implementar,
    com objetivo, escopo, fora de escopo, estado, checklist e links para specs existentes.
 3. Consulte a spec existente relacionada. Se não houver spec aplicável, registre essa lacuna no
    PRD e crie spec somente para a iniciativa nova, antes de implementar.
 4. Implemente apenas o escopo e os critérios definidos. Valide o modelo contra domínios, FKs e
-   invariantes de `ARCHITECTURE.md` quando a mudança tocar essas áreas.
+   invariantes de `docs/prd/ARCHITECTURE.md` quando a mudança tocar essas áreas.
 5. Na entrega, atualize o PRD original: marque os critérios/checklist concluídos, registre
    arquivos e validações e ajuste o estado da iniciativa. Não altere a spec existente.
 6. Atualize o próximo passo neste guia apenas se a sessão deixar trabalho pendente ou bloqueado.
@@ -52,12 +52,12 @@ porque foram escritas ou aprovadas.
 | `2026-09-20-paleta-cores-organica-5-tonalidades-frontend.md`           | Vincular a PRD de iniciativa                             |
 | `2026-09-20-redirecionador-dinamico-links-afiliados-backend.md`        | Vincular a PRD de iniciativa                             |
 | `2026-09-20-renderizacao-video-tematico-loop-frontend.md`              | Vincular a PRD de iniciativa                             |
-| `2026-09-20-reorganizacao-docs-spec-first.md`                          | Entrega documental registrada em `ARCHITECTURE.md`       |
+| `2026-09-20-reorganizacao-docs-spec-first.md`                          | Entrega documental registrada em `docs/prd/ARCHITECTURE.md` |
 | `2026-09-20-rodape-institucional-botao-voltar-ao-topo-frontend.md`     | Vincular a PRD de iniciativa                             |
 | `2026-09-20-tema-claro-padrao-alternancia-modo-escuro-frontend.md`     | Vincular a PRD de iniciativa                             |
 | `2026-09-20-validacao-bloqueio-compatibilidade-backend.md`             | Entrega funcional registrada; consolidar vínculo com PRD |
-| `2026-09-20-vercel-wizard-objetivo-sem-catalogo.md`                    | API de produção pendente em `ARCHITECTURE.md`            |
-| `2026-09-20-wizard-erro-amigavel-catalogo.md`                          | Entrega funcional registrada em `ARCHITECTURE.md`        |
+| `2026-09-20-vercel-wizard-objetivo-sem-catalogo.md`                    | API de produção pendente em `docs/prd/ARCHITECTURE.md`   |
+| `2026-09-20-wizard-erro-amigavel-catalogo.md`                          | Entrega funcional registrada em `docs/prd/ARCHITECTURE.md` |
 
 Não corrigir, renomear ou reescrever esse acervo como parte de uma implementação. Ao retomar uma
 spec legada, criar/vincular seu PRD e refletir nele o estado real após conferir o código e os

@@ -47,4 +47,4 @@ Disponibilizar uma interface gráfica administrativa segura e intuitiva para cad
 ---
 
 ## 6. Validação PRD e Arquitetura
-- O formulário e a tipagem devem aderir estritamente à Seção 6.1 de `ARCHITECTURE.md` sem inventar valores de domínios ou novos componentes não previstos no modelo relacional.
+- O formulário e a tipagem devem aderir estritamente à Seção 6.1 de `docs/prd/ARCHITECTURE.md` sem inventar valores de domínios ou novos componentes não previstos no modelo relacional.
