@@ -6,14 +6,14 @@ export default function BudgetStep({ valor, onChange }) {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold text-white">Qual e o seu teto de orcamento?</h3>
+        <h3 className="text-lg font-semibold text-slate-100">Qual e o seu teto de orcamento?</h3>
         <p className="mt-1 text-sm text-slate-400">
           Use como teto maximo: montamos a melhor configuracao possivel abaixo desse valor.
         </p>
       </div>
 
       <div className="text-center">
-        <span className="text-5xl font-extrabold tracking-tight text-brand-300">
+        <span className="budget-value text-5xl font-extrabold tracking-tight">
           {formatBRL(valor)}
         </span>
         <span className="ml-2 text-sm text-slate-500">/ maximo</span>
@@ -34,11 +34,8 @@ export default function BudgetStep({ valor, onChange }) {
           <button
             key={c}
             onClick={() => onChange(c)}
-            className={`rounded-full border px-4 py-1.5 text-sm font-medium transition ${
-              valor === c
-                ? 'border-brand-500 bg-brand-600 text-white'
-                : 'border-slate-700 bg-slate-900 text-slate-300 hover:border-brand-500 hover:text-white'
-            }`}
+            aria-pressed={valor === c}
+            className={`budget-chip rounded-full border px-4 py-1.5 text-sm font-medium transition ${valor === c ? 'budget-chip--active' : ''}`}
           >
             {formatBRL(c)}
           </button>

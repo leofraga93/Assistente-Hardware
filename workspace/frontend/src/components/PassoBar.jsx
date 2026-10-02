@@ -18,29 +18,26 @@ export default function PassoBar({ atual }) {
           <li key={p.n} className="flex items-center gap-2 sm:gap-4">
             <div className="flex items-center gap-2.5">
               <span
-                className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 transition ${
-                  ativo
-                    ? 'border-brand-500 bg-brand-600 text-white shadow-lg shadow-brand-600/30'
+                className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 transition ${ativo
+                    ? 'border-brand-500 bg-brand-600 text-on-brand shadow-lg shadow-brand-600/30'
                     : concluido
-                      ? 'border-brand-500 bg-brand-500/20 text-brand-300'
+                      ? 'border-brand-500 bg-brand-500/20 text-slate-100'
                       : 'border-slate-700 bg-slate-900 text-slate-500'
-                }`}
+                  }`}
               >
                 <FontAwesomeIcon icon={p.icon} className="h-4 w-4" />
               </span>
               <span
-                className={`hidden text-sm font-medium sm:block ${
-                  ativo ? 'text-white' : concluido ? 'text-brand-300' : 'text-slate-500'
-                }`}
+                className={`hidden text-sm font-medium sm:block ${ativo ? 'text-slate-100' : concluido ? 'text-brand-600' : 'text-slate-500'
+                  }`}
               >
                 {p.titulo}
               </span>
             </div>
             {i < passos.length - 1 && (
               <span
-                className={`h-0.5 w-8 rounded sm:w-12 ${
-                  concluido ? 'bg-brand-500' : 'bg-slate-800'
-                }`}
+                className={`h-0.5 w-8 rounded sm:w-12 ${concluido ? 'bg-brand-500' : 'bg-slate-800'
+                  }`}
               />
             )}
           </li>

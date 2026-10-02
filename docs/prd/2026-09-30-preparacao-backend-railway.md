@@ -1,6 +1,6 @@
 # PRD: Preparação do backend para Railway
 
-- Estado: Bloqueado por configuração externa
+- Estado: Entregue
 - Data: 2026-09-30
 - PRD de origem: `docs/prd/2026-09-29-ordem-execucao-specs.md`, Etapa 1
 - Spec relacionada: `docs/specs/2026-09-20-vercel-wizard-objetivo-sem-catalogo.md` (preservada)
@@ -31,8 +31,8 @@ externa necessária para a Vercel consumir a API publicada.
 - [x] Testes do backend passam.
 - [x] Execução local com `PORT` alternativo atende `/api/catalogo`.
 - [x] Documentados os passos externos de deploy Railway e configuração Vercel.
-- [ ] Após o usuário configurar os serviços, validar `/api/catalogo`, recomendação e substituição
-      pelo domínio público Railway e pela Vercel.
+- [x] Validar `/api/catalogo`, recomendação e substituição pelo domínio público Railway e via
+      aplicação publicada na Vercel.
 
 ## Estado/limites externos
 
@@ -42,14 +42,19 @@ externa necessária para a Vercel consumir a API publicada.
   executar novo deploy para incorporar a variável de build.
 - O critério `/api/catalogo` não exige banco persistente: o H2 é recriado e preenchido por seed.
   Qualquer CRUD exige iniciativa separada para persistência durável.
-- A validação pública final depende do usuário criar/publicar o serviço Railway e fornecer seu
-  domínio público; não armazenar tokens/segredos no repositório ou na conversa.
+- Serviço Railway publicado em `https://assistente-hardware-production.up.railway.app`; frontend
+  Vercel publicado em `https://assistente-hardware.vercel.app` com `VITE_API_BASE` apontando para
+  a API. Não armazenar tokens/segredos no repositório ou na conversa.
 
 ## Entrega
 
 - Arquivos: `workspace/backend/src/main/resources/application.yml` e este PRD.
-- Validações: `mvn -q test`; execução com `PORT=18080`; `GET /api/catalogo` (44 produtos, 8
-  jogos), `POST /api/receitas/recomendadas` (2 recomendações) e
-  `POST /api/montagens/substitutas` (2 alternativas) responderam corretamente.
-- Bloqueio restante: requer domínio público gerado pelo Railway e configuração da variável
-  `VITE_API_BASE` no projeto Vercel para os smoke tests remotos.
+- Validações locais: `mvn -q test`; execução com `PORT=18080`; `GET /api/catalogo` (44 produtos,
+  8 jogos), `POST /api/receitas/recomendadas` e `POST /api/montagens/substitutas` responderam.
+- Validações remotas: site e bundle Vercel responderam 200 e o bundle continha o domínio Railway;
+  o browser chamou `/api/catalogo` e recebeu 200, exibiu os quatro objetivos e os jogos; o POST de
+  recomendação respondeu 200 e exibiu opções AMD/Intel; o POST de substituição respondeu 200,
+  mostrou gabinete de R$ 250 e, ao selecionar, atualizou o total de R$ 3.970 para R$ 3.800. Sem
+  erros de página/console. CORS permitiu a origem Vercel (`Access-Control-Allow-Origin: *`).
+- Nenhum arquivo de spec existente foi alterado. Backend continua usando H2 seedado e não oferece
+  persistência de alterações após reinícios.

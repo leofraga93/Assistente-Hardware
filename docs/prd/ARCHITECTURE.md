@@ -34,8 +34,9 @@ sem declarar as chaves aqui.
 **Fase atual:** Produto funcional ponta a ponta em **dev local** (wizard → opções AMD/Intel →
 configurador → substituição). Interface 100% Font Awesome. Esteira de validação e fallback
 GPU-first no backend. Docs reorganizados (`AGENTS.md` + `docs/prd` + `docs/specs`).
-**Produção Vercel:** apenas o frontend estático; `/api/catalogo` retorna 404. O wizard agora
-explica a falha da API (nao mais passo Objetivo em branco). Falta publicar o Spring Boot.
+**Produção:** frontend estático na Vercel consumindo a API Spring Boot no Railway via
+`VITE_API_BASE`; catálogo, recomendação e substituição testados no navegador. O backend ainda usa
+H2 em memória com seed (alterações não persistem entre reinícios).
 
 - [x] Backend Spring Boot 3 + H2 (modo PostgreSQL) com seed de catálogo
 - [x] API de catálogo, recomendação por marca e substituição de peças
@@ -55,11 +56,17 @@ explica a falha da API (nao mais passo Objetivo em branco). Falta publicar o Spr
 - [x] Ordem de execução e dependências das specs registradas
       (`docs/prd/2026-09-29-ordem-execucao-specs.md`)
 - [ ] Vincular as specs legadas ainda sem PRD de iniciativa, sem alterar os arquivos de spec
-- [ ] Publicar API `/api/catalogo` em host Java (Render, Railway, Fly, Cloud Run ou similar)
-      e apontar o front com `VITE_API_BASE`
+- [x] Publicar API `/api/catalogo` no Railway, configurar `VITE_API_BASE` na Vercel e validar
+      smoke E2E
       (spec `docs/specs/2026-09-20-vercel-wizard-objetivo-sem-catalogo.md`)
 - [x] Preparar Spring para porta dinâmica Railway (`PORT`, fallback `8080`); smoke local completo
       (`docs/prd/2026-09-30-preparacao-backend-railway.md`)
+- [x] Fundação visual coordenada: paleta SPEC-06 e comportamento de tema SPEC-05
+      (`docs/prd/2026-09-30-fundacao-visual-paleta-temas.md`)
+- [ ] Refinar badges, switch de tema e apresentação de valores conforme decisão do usuário
+      (`docs/prd/2026-10-01-ajustes-identidade-e-estados-wizard.md`)
+- [ ] Revisar se jogos são filtrados por objetivo ao planejar a próxima mudança no wizard/catálogo;
+      definir regra e fonte de dados antes de implementar
 - [ ] Definir/limpar pastas vazias: `frontend/src/data/` e `scripts/` (decidir uso ou solicitar remoção)
 - [ ] (Opcional) Avaliar upgrade `@fortawesome/react-fontawesome` 0.2.x → 3.1.1
       (0.2.x emite aviso de depreciação no install; validar API antes)
@@ -70,27 +77,28 @@ explica a falha da API (nao mais passo Objetivo em branco). Falta publicar o Spr
 
 Estado de cada módulo e onde ele vive.
 
-| Módulo                                                    | Onde                                                         | Estado                                                                                      |
-| --------------------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------- |
-| Catálogo de produtos/jogos/receitas (seed)                | `backend/.../bootstrap/DataSeeder.java`                      | Entregue                                                                                    |
-| Endpoint `GET /api/catalogo`                              | `web/AssistenteController`                                   | Entregue                                                                                    |
-| Recomendação única `POST /api/recomendacoes`              | `service/MontagemService#recomendar`                         | Entregue                                                                                    |
-| Recomendações por marca `POST /api/receitas/recomendadas` | `MontagemService#recomendarPorMarca`                         | Entregue                                                                                    |
-| Substituição `POST /api/montagens/substitutas`            | `MontagemService#substitutos`                                | Entregue                                                                                    |
-| Validação `POST /api/configuracao/validar`                | `service/ValidacaoConfiguracaoService` + regras `Validacao*` | Entregue                                                                                    |
-| Tratamento de erros (`{mensagem}` + HTTP)                 | `AssistenteController`                                       | Entregue                                                                                    |
-| Testes de integração (12)                                 | `backend/src/test/.../RecomendacaoIntegrationTest.java`      | Entregue                                                                                    |
-| Fluxo wizard 4 passos                                     | `frontend/src/App.jsx` + componentes em `components/`        | Entregue                                                                                    |
-| Tela de opções (AMD/Intel)                                | `components/OpcoesReceitas.jsx`                              | Entregue                                                                                    |
-| Configurador + modal de substituição                      | `components/Configurator.jsx`, `SubstitutionModal.jsx`       | Entregue                                                                                    |
-| Ícones (sem lucide/emoji)                                 | Todos os `.jsx` — ver mapa na seção 10                       | Entregue                                                                                    |
-| Proxy dev `/api` → `:8080` e preview                      | `frontend/vite.config.js`                                    | Entregue (só local)                                                                         |
-| Deploy Vercel do frontend                                 | `vercel.json` (raiz do repositório)                          | Entregue (estático; install/build em `workspace/frontend`, saída `workspace/frontend/dist`) |
-| Erro amigável se catálogo falhar                          | `CatalogoStatus.jsx` + `App.jsx`                             | Entregue                                                                                    |
-| `VITE_API_BASE`                                           | `frontend/src/api.js`                                        | Entregue (vazio = mesma origem)                                                             |
-| API em produção (host Java)                               | Render / Railway / Fly / Cloud Run + env Vercel              | Pendente                                                                                    |
-| Governança documental e continuidade                      | `AGENTS.md`, `docs/prd/` e `docs/specs/`                     | Entregue; triagem das specs legadas pendente                                                |
-| Ordem de execução das specs                               | `docs/prd/2026-09-29-ordem-execucao-specs.md`                | Registrada; features pendentes                                                              |
+| Módulo                                                    | Onde                                                                             | Estado                                                                                      |
+| --------------------------------------------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| Catálogo de produtos/jogos/receitas (seed)                | `backend/.../bootstrap/DataSeeder.java`                                          | Entregue                                                                                    |
+| Endpoint `GET /api/catalogo`                              | `web/AssistenteController`                                                       | Entregue                                                                                    |
+| Recomendação única `POST /api/recomendacoes`              | `service/MontagemService#recomendar`                                             | Entregue                                                                                    |
+| Recomendações por marca `POST /api/receitas/recomendadas` | `MontagemService#recomendarPorMarca`                                             | Entregue                                                                                    |
+| Substituição `POST /api/montagens/substitutas`            | `MontagemService#substitutos`                                                    | Entregue                                                                                    |
+| Validação `POST /api/configuracao/validar`                | `service/ValidacaoConfiguracaoService` + regras `Validacao*`                     | Entregue                                                                                    |
+| Tratamento de erros (`{mensagem}` + HTTP)                 | `AssistenteController`                                                           | Entregue                                                                                    |
+| Testes de integração (12)                                 | `backend/src/test/.../RecomendacaoIntegrationTest.java`                          | Entregue                                                                                    |
+| Fluxo wizard 4 passos                                     | `frontend/src/App.jsx` + componentes em `components/`                            | Entregue                                                                                    |
+| Tela de opções (AMD/Intel)                                | `components/OpcoesReceitas.jsx`                                                  | Entregue                                                                                    |
+| Configurador + modal de substituição                      | `components/Configurator.jsx`, `SubstitutionModal.jsx`                           | Entregue                                                                                    |
+| Ícones (sem lucide/emoji)                                 | Todos os `.jsx` — ver mapa na seção 10                                           | Entregue                                                                                    |
+| Paleta de cores e temas claro/escuro                      | `frontend/tailwind.config.js`, `frontend/src/index.css`, `App.jsx`, `Header.jsx` | Entregue (claro padrão, escuro persistente)                                                 |
+| Proxy dev `/api` → `:8080` e preview                      | `frontend/vite.config.js`                                                        | Entregue (só local)                                                                         |
+| Deploy Vercel do frontend                                 | `vercel.json` (raiz do repositório)                                              | Entregue (estático; install/build em `workspace/frontend`, saída `workspace/frontend/dist`) |
+| Erro amigável se catálogo falhar                          | `CatalogoStatus.jsx` + `App.jsx`                                                 | Entregue                                                                                    |
+| `VITE_API_BASE`                                           | `frontend/src/api.js`                                                            | Entregue (vazio = mesma origem)                                                             |
+| API em produção (host Java)                               | Railway + env `VITE_API_BASE` na Vercel                                          | Entregue (H2 seedado; sem persistência de alterações)                                       |
+| Governança documental e continuidade                      | `AGENTS.md`, `docs/prd/` e `docs/specs/`                                         | Entregue; triagem das specs legadas pendente                                                |
+| Ordem de execução das specs                               | `docs/prd/2026-09-29-ordem-execucao-specs.md`                                    | Registrada; features pendentes                                                              |
 
 Componentes legados sem importação ativa (mantidos migrados, candidatos a remoção sob aprovação):
 `ReceitasSection.jsx`, `Resultado.jsx`, `StepJogos.jsx`, `StepMarca.jsx`, `BudgetStep.jsx`/`StepOrcamento.jsx`

@@ -64,7 +64,7 @@ export default function Configurator({ build, orcamento, onSubstituir, onVoltar,
       <div className="space-y-6 pt-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h3 className="text-xl font-bold text-white">Configurador</h3>
+            <h3 className="text-xl font-bold text-slate-100">Configurador</h3>
             <p className="mt-1 text-sm text-slate-400">
               Plataforma <span className="text-slate-200">{build.plataforma}</span> &middot;{' '}
               {build.itens.length} pecas &middot; Clique em &quot;Substituir por mais barata&quot;
@@ -85,7 +85,7 @@ export default function Configurator({ build, orcamento, onSubstituir, onVoltar,
 
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
           <div className="card flex items-center gap-3 p-3">
-            <FontAwesomeIcon icon={faMicrochip} className="h-5 w-5 shrink-0 text-brand-300" />
+            <FontAwesomeIcon icon={faMicrochip} className="h-5 w-5 shrink-0 text-brand-600" />
             <div className="min-w-0">
               <span className="block text-[11px] uppercase tracking-wide text-slate-500">CPU</span>
               <span className="block truncate text-xs font-medium text-slate-200">
@@ -94,7 +94,7 @@ export default function Configurator({ build, orcamento, onSubstituir, onVoltar,
             </div>
           </div>
           <div className="card flex items-center gap-3 p-3">
-            <span className="text-brand-300">
+            <span className="text-brand-600">
               <CategoriaIcon categoria="GPU" className="h-5 w-5" />
             </span>
             <div className="min-w-0">
@@ -105,7 +105,7 @@ export default function Configurator({ build, orcamento, onSubstituir, onVoltar,
             </div>
           </div>
           <div className="card flex items-center gap-3 p-3">
-            <FontAwesomeIcon icon={faMemory} className="h-5 w-5 shrink-0 text-brand-300" />
+            <FontAwesomeIcon icon={faMemory} className="h-5 w-5 shrink-0 text-brand-600" />
             <div className="min-w-0">
               <span className="block text-[11px] uppercase tracking-wide text-slate-500">RAM</span>
               <span className="block truncate text-xs font-medium text-slate-200">
@@ -115,7 +115,60 @@ export default function Configurator({ build, orcamento, onSubstituir, onVoltar,
           </div>
         </div>
 
-        <div className="overflow-hidden rounded-2xl border border-slate-800">
+        <div className="space-y-3 lg:hidden">
+          {build.itens.map((item) => (
+            <article key={item.id} className="card p-4">
+              <div className="flex min-w-0 items-start gap-3">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-slate-800 text-brand-600">
+                  <CategoriaIcon categoria={item.categoria} className="h-4 w-4" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <h4 className="break-words font-semibold text-slate-100">{item.nome}</h4>
+                  <p className="mt-1 break-words text-xs text-slate-400">
+                    {item.destaque}{isMonitor(item) ? ' (Monitor)' : ''}
+                    {[item.plataforma, item.tipoMemoria].filter(Boolean).length > 0 && (
+                      <span className="block text-slate-500">
+                        {[item.plataforma, item.tipoMemoria].filter(Boolean).join(' · ')}
+                      </span>
+                    )}
+                  </p>
+                </div>
+              </div>
+              <div className="mt-4 flex items-center justify-between gap-3 border-t border-slate-800 pt-3">
+                <span className="text-xs text-slate-400">Preço</span>
+                <span className="price-value">{formatBRL(item.preco)}</span>
+              </div>
+              <div className="mt-3 grid grid-cols-2 gap-2">
+                <a
+                  href={item.linkAfiliado}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-slate-700 px-2 text-center text-xs font-medium text-slate-300 transition hover:border-brand-500 hover:text-slate-100"
+                >
+                  <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="h-3 w-3 shrink-0" />
+                  Comprar
+                </a>
+                <button
+                  onClick={() => abrirSubstituicao(item)}
+                  className="min-h-10 rounded-lg border border-brand-500/40 bg-brand-600/10 px-2 text-xs font-medium text-slate-100 transition hover:bg-brand-600/20"
+                >
+                  Substituir
+                </button>
+              </div>
+            </article>
+          ))}
+          <div className="card flex items-center justify-between gap-3 p-4">
+            <div>
+              <span className="block font-semibold text-slate-100">Total da montagem</span>
+              <span className="mt-1 block text-xs text-slate-400">
+                Desempenho: {build.pesoGeralCalculado}
+              </span>
+            </div>
+            <span className="price-value shrink-0">{formatBRL(build.total)}</span>
+          </div>
+        </div>
+
+        <div className="hidden overflow-hidden rounded-2xl border border-slate-800 lg:block">
           <table className="w-full text-left text-sm">
             <thead className="bg-slate-900/80 text-xs uppercase tracking-wider text-slate-400">
               <tr>
@@ -130,11 +183,11 @@ export default function Configurator({ build, orcamento, onSubstituir, onVoltar,
                 <tr key={item.id} className="hover:bg-slate-800/30">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
-                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-800 text-brand-300">
+                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-800 text-brand-600">
                         <CategoriaIcon categoria={item.categoria} className="h-4 w-4" />
                       </span>
                       <div>
-                        <span className="block font-medium text-white">{item.nome}</span>
+                        <span className="block font-medium text-slate-100">{item.nome}</span>
                         <span className="block text-xs text-slate-500">
                           {item.destaque}
                           {isMonitor(item) ? ' (Monitor)' : ''}
@@ -148,8 +201,8 @@ export default function Configurator({ build, orcamento, onSubstituir, onVoltar,
                         '\u2014'}
                     </span>
                   </td>
-                  <td className="whitespace-nowrap px-4 py-3 text-right font-semibold text-white">
-                    {formatBRL(item.preco)}
+                  <td className="whitespace-nowrap px-4 py-3 text-right font-semibold">
+                    <span className="price-value">{formatBRL(item.preco)}</span>
                   </td>
                   <td className="whitespace-nowrap px-4 py-3 text-right">
                     <div className="flex items-center justify-end gap-2">
@@ -157,7 +210,7 @@ export default function Configurator({ build, orcamento, onSubstituir, onVoltar,
                         href={item.linkAfiliado}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 rounded-lg bg-slate-800 px-3 py-1.5 text-xs font-medium text-slate-300 transition hover:bg-slate-700 hover:text-white"
+                        className="inline-flex items-center gap-1 rounded-lg bg-slate-800 px-3 py-1.5 text-xs font-medium text-slate-300 transition hover:bg-slate-700 hover:text-slate-100"
                         title="Link de afiliado"
                       >
                         <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="h-3 w-3" />
@@ -165,7 +218,7 @@ export default function Configurator({ build, orcamento, onSubstituir, onVoltar,
                       </a>
                       <button
                         onClick={() => abrirSubstituicao(item)}
-                        className="rounded-lg bg-brand-600/15 px-3 py-1.5 text-xs font-medium text-brand-300 transition hover:bg-brand-600/30"
+                        className="rounded-lg bg-brand-600/15 px-3 py-1.5 text-xs font-medium text-slate-100 transition hover:bg-brand-600/30"
                         title="Substituir por uma peca mais barata"
                       >
                         Substituir por mais barata
@@ -177,15 +230,15 @@ export default function Configurator({ build, orcamento, onSubstituir, onVoltar,
             </tbody>
             <tfoot className="bg-slate-900/80">
               <tr>
-                <td className="px-4 py-3 font-semibold text-white">Total</td>
+                <td className="px-4 py-3 font-semibold text-slate-100">Total</td>
                 <td className="hidden px-4 py-3 sm:table-cell">
                   <span className="flex items-center gap-1 text-xs text-slate-400">
                     <FontAwesomeIcon icon={faGaugeHigh} className="h-3.5 w-3.5" /> Indice de
                     desempenho: {build.pesoGeralCalculado}
                   </span>
                 </td>
-                <td className="px-4 py-3 text-right text-lg font-bold text-brand-300">
-                  {formatBRL(build.total)}
+                <td className="px-4 py-3 text-right text-lg font-bold">
+                  <span className="price-value">{formatBRL(build.total)}</span>
                 </td>
                 <td />
               </tr>
@@ -198,7 +251,7 @@ export default function Configurator({ build, orcamento, onSubstituir, onVoltar,
             {build.observacoes.map((obs, i) => (
               <li
                 key={i}
-                className="rounded-xl border border-amber-500/20 bg-amber-500/5 px-4 py-3 text-sm text-amber-200"
+                className="rounded-xl border border-brand-500/30 bg-brand-600/10 px-4 py-3 text-sm text-slate-100"
               >
                 {obs}
               </li>

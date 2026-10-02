@@ -2,6 +2,51 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --palette-slate-50: 248 250 252;
+  --palette-slate-100: 2 6 23;
+  --palette-slate-200: 2 6 23;
+  --palette-slate-300: 2 6 23;
+  --palette-slate-400: 71 85 105;
+  --palette-slate-500: 71 85 105;
+  --palette-slate-600: 224 231 255;
+  --palette-slate-700: 71 85 105;
+  --palette-slate-800: 224 231 255;
+  --palette-slate-900: 238 242 255;
+  --palette-slate-950: 248 250 252;
+  --palette-brand: 99 102 241;
+  --palette-brand-text: 79 70 229;
+  --palette-budget-value: 79 70 229;
+  --palette-budget-active: 79 70 229;
+  --palette-budget-border: 203 213 225;
+  --palette-budget-label: 71 85 105;
+  --palette-range-track: 203 213 225;
+  --palette-value: 16 185 129;
+  --palette-graphite: 2 6 23;
+  color-scheme: light;
+}
+
+html.dark {
+  --palette-brand-text: 165 180 252;
+  --palette-budget-value: 196 181 253;
+  --palette-budget-active: 124 58 237;
+  --palette-budget-border: 51 65 85;
+  --palette-budget-label: 203 213 225;
+  --palette-range-track: 51 65 85;
+  --palette-slate-50: 248 250 252;
+  --palette-slate-100: 241 245 249;
+  --palette-slate-200: 226 232 240;
+  --palette-slate-300: 203 213 225;
+  --palette-slate-400: 148 163 184;
+  --palette-slate-500: 100 116 139;
+  --palette-slate-600: 71 85 105;
+  --palette-slate-700: 51 65 85;
+  --palette-slate-800: 30 41 59;
+  --palette-slate-900: 15 23 42;
+  --palette-slate-950: 2 6 23;
+  color-scheme: dark;
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
@@ -11,24 +56,116 @@
   }
 }
 
-@layer components {
-  .card {
-    @apply rounded-2xl border border-slate-800 bg-slate-900/60 backdrop-blur;
-  }
-  .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-brand-600 px-6 py-3 font-semibold text-white transition hover:bg-brand-500 disabled:cursor-not-allowed disabled:opacity-50;
-  }
-  .btn-ghost {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-slate-700 px-4 py-2 text-sm font-medium text-slate-200 transition hover:border-brand-500 hover:text-white;
+html.theme-transitioning,
+html.theme-transitioning *,
+html.theme-transitioning *::before,
+html.theme-transitioning *::after {
+  transition-property: color, background-color, background-image, border-color, box-shadow, outline-color, fill, stroke, transform, opacity;
+  transition-duration: 480ms;
+  transition-timing-function: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.theme-transitioning,
+  html.theme-transitioning *,
+  html.theme-transitioning *::before,
+  html.theme-transitioning *::after {
+    transition-duration: 1ms !important;
+    transition-delay: 0ms !important;
   }
 }
 
+@layer components {
+  .card {
+    @apply rounded-lg border border-slate-800 bg-slate-900 backdrop-blur;
+  }
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-brand-600 px-6 py-3 font-semibold transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-50;
+    color: rgb(var(--palette-graphite));
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-slate-700 px-4 py-2 text-sm font-medium text-slate-200 transition hover:border-brand-500 hover:text-slate-100;
+  }
+}
+
+.price-value {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid rgb(var(--palette-brand));
+  border-radius: 0.5rem;
+  background-color: transparent;
+  color: rgb(var(--palette-slate-400));
+  padding: 0.125rem 0.5rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.price-value--recommended {
+  color: rgb(var(--palette-brand-text));
+}
+
+.text-brand-accessible {
+  color: rgb(var(--palette-brand-text));
+}
+
+.budget-value {
+  color: rgb(var(--palette-budget-value));
+}
+
+.budget-chip {
+  border-color: rgb(var(--palette-budget-border));
+  background-color: transparent;
+  color: rgb(var(--palette-budget-label));
+}
+
+.budget-chip:hover {
+  border-color: rgb(var(--palette-budget-active));
+  color: rgb(var(--palette-budget-value));
+}
+
+.budget-chip:focus-visible {
+  outline: 2px solid rgb(var(--palette-budget-active));
+  outline-offset: 2px;
+}
+
+.budget-chip--active,
+.budget-chip--active:hover {
+  border-color: rgb(var(--palette-budget-active));
+  background-color: rgb(var(--palette-budget-active));
+  color: #fff;
+}
+
+.substitution-use {
+  color: rgb(var(--palette-brand-text));
+}
+
+.theme-switch {
+  background-color: rgb(var(--palette-slate-900));
+}
+
+.theme-switch-thumb {
+  color: rgb(var(--palette-graphite));
+}
+
+.value-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(var(--palette-value));
+  color: rgb(var(--palette-graphite));
+}
+
+.text-on-brand {
+  color: rgb(var(--palette-graphite));
+}
+
 input[type='range'] {
-  @apply h-2 w-full cursor-pointer appearance-none rounded-full bg-slate-700;
+  @apply h-2 w-full cursor-pointer appearance-none rounded-full;
+  background-color: rgb(var(--palette-range-track));
 }
 input[type='range']::-webkit-slider-thumb {
   -webkit-appearance: none;
-  @apply h-5 w-5 rounded-full bg-brand-500 shadow-lg shadow-brand-500/40;
+  @apply h-5 w-5 rounded-full bg-brand-500 shadow-lg shadow-brand-500/30;
 }
 input[type='range']::-moz-range-thumb {
   @apply h-5 w-5 rounded-full border-0 bg-brand-500 shadow-lg shadow-brand-500/40;

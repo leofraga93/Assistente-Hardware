@@ -55,6 +55,8 @@ trabalho pendente e decisões que precisam ser resolvidas antes de codificar.
      a origem à Vercel quando houver autenticação/rotas privadas.
    - Aceite operacional: testar `/api/catalogo` na URL Railway e na URL Vercel; testar também os
      dois POST públicos do wizard. Verificar resposta 2xx, corpo esperado, CORS e cold start.
+   - Estado em 2026-09-30: etapa concluída e exercitada no navegador publicado; resultados e
+     limites de persistência estão em `docs/prd/2026-09-30-preparacao-backend-railway.md`.
    - Comparação de hospedagem consultada em 2026-09-30 (preços mudam; estimar na conta/região
      antes de escolher):
      - Railway: melhor encaixe e menor atrito para este Spring Boot. Plano Free inclui US$ 1/mês
@@ -92,8 +94,23 @@ trabalho pendente e decisões que precisam ser resolvidas antes de codificar.
 3. `docs/specs/2026-09-20-tema-claro-padrao-alternancia-modo-escuro-frontend.md` (SPEC-05),
    dependente da paleta e de seus tokens/classes.
 
-As etapas 2 e 3 podem avançar enquanto se resolve o host da etapa 1, desde que a decisão visual
-pendente abaixo seja registrada no PRD antes de alterar componentes.
+As duas specs devem ser implementadas como uma iniciativa coordenada, registrada em
+`docs/prd/2026-09-30-fundacao-visual-paleta-temas.md`. A SPEC-06 define valores e papéis da paleta,
+mas não controla o modo ativo; default claro, alternância, classe `dark` e persistência pertencem
+à SPEC-05. A paleta pode alterar as cores visíveis em ambos os modos, portanto validar os dois e
+não entregar um estado intermediário que force o modo claro ou prejudique o escuro.
+
+- Estado em 2026-10-01: Etapa entregue; resultados e validações registrados em
+  `docs/prd/2026-09-30-fundacao-visual-paleta-temas.md`.
+
+### Refinamento de interface antes da landing
+
+- Iniciativa priorizada pelo usuário antes da Etapa 3: `docs/prd/2026-10-01-ajustes-identidade-e-estados-wizard.md`.
+- Implementar a nova SPEC-12 (`docs/specs/2026-10-01-badges-toggle-slider-valores-monetarios.md`):
+  remover os dois badges vetados, tornar o toggle um switch deslizante e ajustar preços/modal ao
+  padrão cinza + contorno Roxo Tech, com texto Roxo Tech para valores recomendados.
+- Preservar SPEC-05/06. A decisão específica de apresentação monetária deste PRD prevalece sobre
+  a instrução verde da SPEC-06, sem reescrever o arquivo de spec.
 
 ### Etapa 3 — Estrutura da landing page
 
@@ -145,12 +162,18 @@ pendente abaixo seja registrada no PRD antes de alterar componentes.
   redes/institucional (SPEC-10), produtos/fotos e destinos de ofertas (SPEC-09).
 - **Acessibilidade/performance:** respeitar movimento reduzido, carregamento responsivo e fallback
   do vídeo; as specs atuais não detalham completamente esses estados.
-- **Design:** SPEC-05/06 especificam paleta clara/índigo e a arquitetura registra interface escura
-  atual. Validar a direção visual e atualizar o PRD da iniciativa antes de propagar tokens.
+- **Jogos por objetivo:** antes da próxima iniciativa que altere ObjectiveStep, GamesStep, catálogo
+  ou modelo, rever se a lista deve depender dos objetivos. Hoje o front lista todos os registros
+  `tipo === 'JOGO'` e a entidade `Jogo` não contém relação objetivo→jogo. Documentar a regra e sua
+  fonte de dados primeiro; não inventar associação, FK ou domínio.
+- **Design:** a iniciativa coordenada SPEC-05/06 registra a decisão de preservar ambos os modos,
+  usar a paleta da SPEC-06 e manter em SPEC-05 o comportamento do tema. Seguir
+  `docs/prd/2026-09-30-fundacao-visual-paleta-temas.md`; não alterar as specs existentes.
 
 ## Checklist de acompanhamento
 
-- [x] Inventariar as 14 specs e distinguir entregues de pendentes com base em PRD/código.
+- [x] Inventariar as 14 specs originais e distinguir entregues de pendentes; registrar SPEC-12
+      como nova iniciativa de refinamento.
 - [x] Definir dependências, etapas paralelizáveis e decisões que bloqueiam trabalho seguro.
 - [x] Preservar os arquivos de spec existentes.
 - [ ] Criar/vincular PRD de iniciativa para cada feature antes de sua implementação.

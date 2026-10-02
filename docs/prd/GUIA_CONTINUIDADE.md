@@ -38,26 +38,27 @@ iniciativa nem a spec; aponta para eles e registra o estado da transição docum
 
 ## Inventário das specs existentes
 
-As specs abaixo foram preservadas sem edição nesta migração. Algumas são referências legadas cujo
-vínculo e estado ainda precisam ser consolidados em PRDs; não inferir que estão implementadas só
-porque foram escritas ou aprovadas.
+As 14 specs preexistentes foram preservadas sem edição. A SPEC-12 abaixo é nova, criada para a
+iniciativa de refinamento pedida pelo usuário. Não inferir que uma feature está implementada só
+porque sua spec foi escrita ou aprovada.
 
-| Spec existente                                                         | Situação no registro PRD                                    |
-| ---------------------------------------------------------------------- | ----------------------------------------------------------- |
-| `2026-09-20-autenticacao-admin-jwt-backend.md`                         | Vincular a PRD de iniciativa                                |
-| `2026-09-20-hero-section-menu-sticky-frontend.md`                      | Vincular a PRD de iniciativa                                |
-| `2026-09-20-modais-recomendacao-grupos-compra-frontend.md`             | Vincular a PRD de iniciativa                                |
-| `2026-09-20-navegacao-menu-superior-posicionamento-wizard-frontend.md` | Vincular a PRD de iniciativa                                |
-| `2026-09-20-painel-admin-cadastro-produtos-frontend.md`                | Vincular a PRD de iniciativa                                |
-| `2026-09-20-paleta-cores-organica-5-tonalidades-frontend.md`           | Vincular a PRD de iniciativa                                |
-| `2026-09-20-redirecionador-dinamico-links-afiliados-backend.md`        | Vincular a PRD de iniciativa                                |
-| `2026-09-20-renderizacao-video-tematico-loop-frontend.md`              | Vincular a PRD de iniciativa                                |
-| `2026-09-20-reorganizacao-docs-spec-first.md`                          | Entrega documental registrada em `docs/prd/ARCHITECTURE.md` |
-| `2026-09-20-rodape-institucional-botao-voltar-ao-topo-frontend.md`     | Vincular a PRD de iniciativa                                |
-| `2026-09-20-tema-claro-padrao-alternancia-modo-escuro-frontend.md`     | Vincular a PRD de iniciativa                                |
-| `2026-09-20-validacao-bloqueio-compatibilidade-backend.md`             | Entrega funcional registrada; consolidar vínculo com PRD    |
-| `2026-09-20-vercel-wizard-objetivo-sem-catalogo.md`                    | API de produção pendente em `docs/prd/ARCHITECTURE.md`      |
-| `2026-09-20-wizard-erro-amigavel-catalogo.md`                          | Entrega funcional registrada em `docs/prd/ARCHITECTURE.md`  |
+| Spec existente                                                         | Situação no registro PRD                                                  |
+| ---------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `2026-09-20-autenticacao-admin-jwt-backend.md`                         | Vincular a PRD de iniciativa                                              |
+| `2026-09-20-hero-section-menu-sticky-frontend.md`                      | Vincular a PRD de iniciativa                                              |
+| `2026-09-20-modais-recomendacao-grupos-compra-frontend.md`             | Vincular a PRD de iniciativa                                              |
+| `2026-09-20-navegacao-menu-superior-posicionamento-wizard-frontend.md` | Vincular a PRD de iniciativa                                              |
+| `2026-09-20-painel-admin-cadastro-produtos-frontend.md`                | Vincular a PRD de iniciativa                                              |
+| `2026-09-20-paleta-cores-organica-5-tonalidades-frontend.md`           | Vincular a PRD de iniciativa                                              |
+| `2026-09-20-redirecionador-dinamico-links-afiliados-backend.md`        | Vincular a PRD de iniciativa                                              |
+| `2026-09-20-renderizacao-video-tematico-loop-frontend.md`              | Vincular a PRD de iniciativa                                              |
+| `2026-09-20-reorganizacao-docs-spec-first.md`                          | Entrega documental registrada em `docs/prd/ARCHITECTURE.md`               |
+| `2026-09-20-rodape-institucional-botao-voltar-ao-topo-frontend.md`     | Vincular a PRD de iniciativa                                              |
+| `2026-09-20-tema-claro-padrao-alternancia-modo-escuro-frontend.md`     | Vincular a PRD de iniciativa                                              |
+| `2026-09-20-validacao-bloqueio-compatibilidade-backend.md`             | Entrega funcional registrada; consolidar vínculo com PRD                  |
+| `2026-09-20-vercel-wizard-objetivo-sem-catalogo.md`                    | API de produção pendente em `docs/prd/ARCHITECTURE.md`                    |
+| `2026-09-20-wizard-erro-amigavel-catalogo.md`                          | Entrega funcional registrada em `docs/prd/ARCHITECTURE.md`                |
+| `2026-10-01-badges-toggle-slider-valores-monetarios.md`                | Planejada em `docs/prd/2026-10-01-ajustes-identidade-e-estados-wizard.md` |
 
 Não corrigir, renomear ou reescrever esse acervo como parte de uma implementação. Ao retomar uma
 spec legada, criar/vincular seu PRD e refletir nele o estado real após conferir o código e os
@@ -70,11 +71,14 @@ critérios; preservar o arquivo da spec.
 - Migração atual: contrato estável em `AGENTS.md`, processo descrito aqui e registrado em
   `docs/prd/2026-09-29-governanca-documental.md`.
 - Checklist transversal: `docs/prd/ARCHITECTURE.md`, seção 2.
-- Iniciativa ativa: `docs/prd/2026-09-30-preparacao-backend-railway.md`. Backend já lê `PORT` e
-  passou smoke tests locais em porta alternativa; próximo passo externo é configurar Root
-  Directory `workspace/backend` no Railway, publicar, copiar o domínio público HTTPS para
-  `VITE_API_BASE` no Vercel e então executar os testes remotos indicados no PRD. H2 atende ao
-  catálogo seedado; decidir Postgres persistente antes de CRUD ou edição durável.
+- Última iniciativa entregue: `docs/prd/2026-09-30-fundacao-visual-paleta-temas.md`. Paleta e tema
+  claro/escuro foram validados em desktop e mobile; specs existentes permaneceram intactas.
+  Próxima iniciativa planejada: `docs/prd/2026-10-01-ajustes-identidade-e-estados-wizard.md`,
+  especificada em `docs/specs/2026-10-01-badges-toggle-slider-valores-monetarios.md`. Ela precede
+  a Etapa 3/SPEC-07 no roadmap atualizado. A revisão objetivo→jogos permanece como observação
+  futura até uma iniciativa tocar o passo Objetivo/Jogos, catálogo ou modelo.
 - Não alterar as specs existentes; confirmar critérios no código e registrar estado apenas no PRD.
 - Alterações locais preexistentes observadas durante esta migração: pasta `.vscode/` não rastreada;
   preservar sem tocar.
+
+- Próximo passo: concluir a verificação visual desktop/mobile da SPEC-12 e então atualizar o estado/checklist em docs/prd/2026-10-01-ajustes-identidade-e-estados-wizard.md.

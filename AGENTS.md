@@ -11,6 +11,11 @@ mudanças exigem decisão explícita do usuário. Mantenha-o curto para reutiliz
   orçamento e demais invariantes definidos no PRD.
 - Frontend: React + Vite + Tailwind. Ícones exclusivamente Font Awesome via SVG core e
   `FontAwesomeIcon`; nunca usar emoji como ícone ou conteúdo.
+- Não voltar a exibir badges de proposta de valor no hero/wizard (`Simples para quem nao entende
+de hardware`) nem no cabeçalho (`Recomendacoes inteligentes`); não criar equivalentes com a mesma
+  função promocional nesses locais.
+- Controle de tema do cabeçalho deve ser switch deslizante com estado visível, não botão estático
+  somente com ícone.
 - Backend: Java 17 + Spring Boot. O deploy Vercel é apenas do frontend; a API exige host próprio.
 - Não adicionar comentários de código sem necessidade. Manter o idioma e estilo já usados na
   área modificada. Não commitar sem pedido explícito.

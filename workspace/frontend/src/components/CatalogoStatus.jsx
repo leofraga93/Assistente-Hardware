@@ -5,7 +5,7 @@ export default function CatalogoStatus({ status, onTentar, children }) {
   if (status === 'carregando') {
     return (
       <div className="flex flex-col items-center justify-center gap-3 py-10 text-center">
-        <FontAwesomeIcon icon={faSpinner} className="h-8 w-8 animate-spin text-brand-400" />
+        <FontAwesomeIcon icon={faSpinner} className="h-8 w-8 animate-spin text-brand-600" />
         <p className="text-sm text-slate-400">Carregando o catalogo...</p>
       </div>
     )
@@ -14,14 +14,14 @@ export default function CatalogoStatus({ status, onTentar, children }) {
   if (status === 'erro') {
     return (
       <div
-        className="rounded-xl border border-amber-500/30 bg-amber-950/40 px-4 py-5 text-center"
+        className="rounded-xl border border-brand-500/30 bg-brand-500/10 px-4 py-5 text-center"
         role="alert"
       >
         <FontAwesomeIcon
           icon={faTriangleExclamation}
-          className="mx-auto h-7 w-7 text-amber-300"
+          className="mx-auto h-7 w-7 text-brand-600"
         />
-        <p className="mt-3 text-sm font-medium text-amber-100">
+        <p className="mt-3 text-sm font-medium text-slate-100">
           Nao foi possivel carregar objetivos e jogos.
         </p>
         <p className="mt-2 text-xs leading-relaxed text-slate-400">

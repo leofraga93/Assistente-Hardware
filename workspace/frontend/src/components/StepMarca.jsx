@@ -11,7 +11,7 @@ export default function StepMarca({ marca, onChange }) {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold text-white">Prefere alguma marca?</h3>
+        <h3 className="text-lg font-semibold text-slate-100">Prefere alguma marca?</h3>
         <p className="mt-1 text-sm text-slate-400">
           Opcional. Se nao tiver preferencia, escolhemos a melhor plataforma para o seu orcamento.
         </p>
@@ -24,20 +24,18 @@ export default function StepMarca({ marca, onChange }) {
             <button
               key={o.rotulo}
               onClick={() => onChange(o.valor)}
-              className={`flex flex-col items-center gap-2 rounded-xl border p-5 text-center transition ${
-                ativo
+              className={`flex flex-col items-center gap-2 rounded-xl border p-5 text-center transition ${ativo
                   ? 'border-brand-500 bg-brand-600/15 ring-1 ring-brand-500'
                   : 'border-slate-800 bg-slate-900 hover:border-slate-600'
-              }`}
+                }`}
             >
               <span
-                className={`flex h-11 w-11 items-center justify-center rounded-xl ${
-                  ativo ? 'bg-brand-600/20 text-brand-300' : 'bg-slate-800 text-slate-400'
-                }`}
+                className={`flex h-11 w-11 items-center justify-center rounded-xl ${ativo ? 'bg-brand-600/20 text-slate-100' : 'bg-slate-800 text-slate-400'
+                  }`}
               >
                 <FontAwesomeIcon icon={o.icon} className="h-6 w-6" />
               </span>
-              <span className="font-semibold text-white">{o.rotulo}</span>
+              <span className="font-semibold text-slate-100">{o.rotulo}</span>
               <span className="text-xs text-slate-400">{o.desc}</span>
             </button>
           )

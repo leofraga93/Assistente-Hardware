@@ -6,7 +6,7 @@ export default function StepOrcamento({ valor, onChange }) {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold text-white">Qual e o seu orcamento?</h3>
+        <h3 className="text-lg font-semibold text-slate-100">Qual e o seu orcamento?</h3>
         <p className="mt-1 text-sm text-slate-400">
           Arraste o controle ou toque em um valor sugerido. Nao se preocupe: montamos a melhor
           configuracao dentro do valor.
@@ -14,7 +14,7 @@ export default function StepOrcamento({ valor, onChange }) {
       </div>
 
       <div className="text-center">
-        <span className="text-5xl font-extrabold tracking-tight text-brand-300">
+        <span className="price-value text-5xl font-extrabold tracking-tight">
           {formatBRL(valor)}
         </span>
       </div>
@@ -34,13 +34,12 @@ export default function StepOrcamento({ valor, onChange }) {
           <button
             key={c}
             onClick={() => onChange(c)}
-            className={`rounded-full border px-4 py-1.5 text-sm font-medium transition ${
-              valor === c
-                ? 'border-brand-500 bg-brand-600 text-white'
-                : 'border-slate-700 bg-slate-900 text-slate-300 hover:border-brand-500 hover:text-white'
-            }`}
+            className={`rounded-full border px-4 py-1.5 text-sm font-medium transition ${valor === c
+                ? 'border-brand-500 bg-brand-600 text-on-brand'
+                : 'border-slate-700 bg-slate-900 text-slate-300 hover:border-brand-500 hover:text-slate-100'
+              }`}
           >
-            {formatBRL(c)}
+            <span className="price-value">{formatBRL(c)}</span>
           </button>
         ))}
       </div>

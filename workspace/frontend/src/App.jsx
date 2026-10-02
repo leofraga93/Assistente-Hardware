@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDesktop, faArrowLeft, faArrowRight, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import Header from './components/Header'
@@ -12,7 +12,18 @@ import Configurator from './components/Configurator'
 import CatalogoStatus from './components/CatalogoStatus'
 import { getCatalogo, receitasRecomendadas } from './api'
 
+const THEME_STORAGE_KEY = 'assistente_tech_theme'
+
+function getSavedDarkMode() {
+  try {
+    return window.localStorage.getItem(THEME_STORAGE_KEY) === 'dark'
+  } catch {
+    return false
+  }
+}
+
 export default function App() {
+  const [darkMode, setDarkMode] = useState(getSavedDarkMode)
   const [catalogo, setCatalogo] = useState(null)
   const [statusCatalogo, setStatusCatalogo] = useState('carregando')
   const [fase, setFase] = useState('wizard')
@@ -25,6 +36,30 @@ export default function App() {
   const [erro, setErro] = useState('')
   const [opcoes, setOpcoes] = useState([])
   const [build, setBuild] = useState(null)
+  const themeTransitionTimeout = useRef(null)
+
+  const alternarTema = useCallback(() => {
+    const root = document.documentElement
+    root.classList.add('theme-transitioning')
+    window.clearTimeout(themeTransitionTimeout.current)
+    themeTransitionTimeout.current = window.setTimeout(() => {
+      root.classList.remove('theme-transitioning')
+      themeTransitionTimeout.current = null
+    }, 480)
+    setDarkMode((current) => !current)
+  }, [])
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', darkMode)
+    try {
+      window.localStorage.setItem(THEME_STORAGE_KEY, darkMode ? 'dark' : 'light')
+    } catch { }
+  }, [darkMode])
+
+  useEffect(() => () => {
+    window.clearTimeout(themeTransitionTimeout.current)
+    document.documentElement.classList.remove('theme-transitioning')
+  }, [])
 
   const carregarCatalogo = useCallback(() => {
     setStatusCatalogo('carregando')
@@ -93,19 +128,15 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-950 to-slate-900">
-      <Header />
+      <Header darkMode={darkMode} onToggleTheme={alternarTema} />
 
       <main>
         {fase === 'wizard' && (
           <>
             <section className="mx-auto max-w-6xl px-4 pt-12 pb-10 text-center">
-              <span className="inline-flex items-center gap-2 rounded-full border border-brand-500/30 bg-brand-500/10 px-4 py-1.5 text-xs font-medium text-brand-300">
-                <FontAwesomeIcon icon={faDesktop} className="h-3.5 w-3.5" />
-                Simples para quem nao entende de hardware
-              </span>
-              <h1 className="mx-auto mt-5 max-w-2xl text-4xl font-extrabold tracking-tight text-white sm:text-5xl">
+              <h1 className="mx-auto mt-0 max-w-2xl text-4xl font-extrabold tracking-tight text-slate-100 sm:text-5xl">
                 Monte o computador{' '}
-                <span className="bg-gradient-to-r from-brand-400 to-cyan-400 bg-clip-text text-transparent">
+                <span className="text-brand-600">
                   ideal para o seu bolso
                 </span>
               </h1>
@@ -151,7 +182,7 @@ export default function App() {
                 </div>
 
                 {erro && (
-                  <p className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+                  <p className="mt-4 rounded-xl border border-brand-500/30 bg-brand-500/10 px-4 py-3 text-sm text-slate-100">
                     {erro}
                   </p>
                 )}
@@ -175,7 +206,7 @@ export default function App() {
                     <button
                       onClick={gerarOpcoes}
                       disabled={carregando || catalogoIndisponivel}
-                      className="btn-primary bg-gradient-to-r from-brand-600 to-cyan-600 hover:from-brand-500 hover:to-cyan-500"
+                      className="btn-primary"
                     >
                       {carregando ? (
                         <>

@@ -9,11 +9,11 @@ export default function ReceitasSection({ receitas }) {
   return (
     <section className="mx-auto max-w-6xl px-4 py-14">
       <div className="mb-8 text-center">
-        <span className="inline-flex items-center gap-2 rounded-full border border-brand-500/30 bg-brand-500/10 px-4 py-1.5 text-xs font-medium text-brand-300">
-          <FontAwesomeIcon icon={faAward} className="h-3.5 w-3.5" />
+        <span className="inline-flex items-center gap-2 rounded-full border border-brand-500/30 bg-brand-500/10 px-4 py-1.5 text-xs font-medium text-slate-100">
+          <FontAwesomeIcon icon={faAward} className="h-3.5 w-3.5 text-brand-600" />
           Receitas pre-montadas
         </span>
-        <h2 className="mt-4 text-2xl font-bold text-white">
+        <h2 className="mt-4 text-2xl font-bold text-slate-100">
           Configuracoes prontas, validadas pelos especialistas
         </h2>
         <p className="mt-2 text-sm text-slate-400">
@@ -28,15 +28,15 @@ export default function ReceitasSection({ receitas }) {
             <div key={r.id} className="card flex flex-col p-6">
               <div className="mb-4 flex items-center justify-between">
                 <div>
-                  <h3 className="font-bold text-white">{r.nome}</h3>
-                  <span className="mt-1 inline-flex items-center gap-1 rounded-full bg-slate-800 px-2.5 py-0.5 text-xs font-medium text-brand-300">
-                    <FontAwesomeIcon icon={faMicrochip} className="h-3 w-3" />
+                  <h3 className="font-bold text-slate-100">{r.nome}</h3>
+                  <span className="mt-1 inline-flex items-center gap-1 rounded-full bg-slate-800 px-2.5 py-0.5 text-xs font-medium text-slate-100">
+                    <FontAwesomeIcon icon={faMicrochip} className="h-3 w-3 text-brand-600" />
                     {r.arquiteturaMarca}
                   </span>
                 </div>
                 <div className="text-right">
                   <span className="block text-xs text-slate-400">Total</span>
-                  <span className="block text-lg font-bold text-brand-300">
+                  <span className="price-value mt-1">
                     {formatBRL(total)}
                   </span>
                 </div>
@@ -44,11 +44,11 @@ export default function ReceitasSection({ receitas }) {
               <ul className="mb-4 space-y-2.5">
                 {r.itens.map((item) => (
                   <li key={item.id} className="flex items-center gap-3 text-sm">
-                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-slate-800 text-brand-300">
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-slate-800 text-brand-600">
                       <CategoriaIcon categoria={item.categoria} className="h-3.5 w-3.5" />
                     </span>
                     <span className="flex-1 text-slate-300">{item.nome}</span>
-                    <span className="text-slate-400">{formatBRL(item.preco)}</span>
+                    <span className="price-value">{formatBRL(item.preco)}</span>
                   </li>
                 ))}
               </ul>
@@ -60,7 +60,7 @@ export default function ReceitasSection({ receitas }) {
                   href={r.itens[0]?.linkAfiliado}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-xs font-semibold text-brand-300 hover:text-brand-200"
+                  className="inline-flex items-center gap-1 text-xs font-semibold text-slate-100 transition hover:opacity-80"
                 >
                   Ver pecas por peca
                   <FontAwesomeIcon icon={faArrowRight} className="h-3 w-3" />
